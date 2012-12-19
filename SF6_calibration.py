@@ -18,7 +18,7 @@ fn_pattern = re.compile('^nES_([A-Z]{1}[a-z]?)+[1-9]*_.*\.ee$')
 frag_info = {'SF6': [[0], [0], []], 'SF5': [[0], [0], []], 'F': [[5.5,9,11.5], [0,0,0], []], 'F2': [[4,6], [0,0], []]}
 
 #list directory cal
-caldirlist = os.listdir('ES_data/cal')
+caldirlist = os.listdir('Z:\User/Josi/fitlib/ES_data/cal')
 
 #for plot numbering
 i = 1

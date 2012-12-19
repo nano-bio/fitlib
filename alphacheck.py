@@ -17,7 +17,7 @@ def pbdv_fa(x,y):
 ae_func = lambda p, x: p[0] + p[1]*exp(-1.0/(4.0*sigma**2)*(p[2]-x)**2)*pbdv_fa(-(alpha+1), (p[2]-x)/sigma)
 errfunc = lambda p, x, y: ae_func(p, x) - y
 
-data = fl.reades('AE_HMX_H2O.txt')
+data = fl.readfile('AE_data/AE_HMX_H2O.txt')
 
 sigma = 0.9
 

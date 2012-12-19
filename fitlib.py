@@ -10,6 +10,7 @@ from operator import itemgetter
 import matplotlib.pyplot
 
 import re
+import os
 
 def pbdv_fa(x,y):
     # we need this, because b is the derivative of a, which is not needed in fits and annoying when defining fit functions
@@ -52,11 +53,24 @@ def readfile(filename):
     #create empty list
     a = []
 
+	#adjust file path in case we're running on fucking windows
+    filename = os.path.normcase(filename)
+	
     #open file
-    f = open(filename,'r')
-
+    try:
+        #relative path?
+        f = open(filename,'r')
+    except:
+        #probably not. let us try a full patch
+        filename = os.path.join(os.path.dirname(__file__), filename)
+        try:
+            f = open(filename,'r')
+        except:
+            #ok this thing cannot be read
+            raise SystemExit('Could not read file')
+        
     #we need to check if a line is actually useful
-    num_tab_num = re.compile('^[0-9]+\.[0-9]+\\t[0-9]+\.[0-9]+.*\\r\\n$')
+    num_tab_num = re.compile('^[0-9]+\.[0-9]+\\t[0-9]+\.[0-9]+.*[\\r]?\\n$')
 
     #read file, skip comment lines
     for line in f:

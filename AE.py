@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 import fitlib as fl
 
-sigma = 0.9
+sigma = 1.0
 alpha = 1.27
 
 #retrieve function for Appearance Energy with zero fixed parameters (hence the '')
