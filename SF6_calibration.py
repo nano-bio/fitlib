@@ -1,9 +1,14 @@
 #!/usr/bin/python
 import fitlib as fl
+import loglib
+
 import os
 import re
 
 import matplotlib.pyplot as plt
+
+#instanciate a log object
+log = loglib.Log()
 
 #define empty list of peaks used for calibration
 calpeaks = []
