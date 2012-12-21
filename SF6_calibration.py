@@ -18,7 +18,7 @@ fn_pattern = re.compile('^nES_([A-Z]{1}[a-z]?)+[1-9]*_.*\.ee$')
 frag_info = {'SF6': [[0], [0], []], 'SF5': [[0], [0], []], 'F': [[5.5,9,11.5], [0,0,0], []], 'F2': [[4,6], [0,0], []]}
 
 #list directory cal
-caldirlist = os.listdir('Z:\User/Josi/fitlib/ES_data/cal')
+caldirlist = os.listdir('ES_data/cal')
 
 #for plot numbering
 i = 1
@@ -43,11 +43,11 @@ for file in caldirlist:
         #only plot if we actually had the file (fit parameter is still of type 'list' if this is the case)
         if type(frag_info[fragment][2]) is not list:
             plt.subplot(3,2,i)
-            fl.plotES(plt, data, fragment)
+            fl.plotES(data, fragment)
             # the /3 stems from the fact that the functions takes the number of peaks, not parameters
-            fl.plot_fit(plt, data, fl.gaussfunctions(len(frag_info[fragment][2])/3), frag_info[fragment][2])
+            fl.plot_fit(data, fl.gaussfunctions(len(frag_info[fragment][2])/3), frag_info[fragment][2])
             i = i + 1
 
-plt.show()
 plt.tight_layout()
+plt.show()
 #plt.savefig('ES_plots/bla.png')

@@ -7,10 +7,12 @@ from scipy import optimize
 
 from operator import itemgetter
 
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
 
 import re
 import os
+
+#library for plotting and fitting
 
 def pbdv_fa(x,y):
     # we need this, because b is the derivative of a, which is not needed in fits and annoying when defining fit functions
@@ -174,20 +176,20 @@ def guess_ES_peaks(data,numberofpeaks):
 
     return mf_final
 
-def plotES(plotobject, data, title):
+def plotES(data, title):
     #this function plots an ES
-    plotobject.plot(data[:,0],data[:,1],'b-')
-    plotobject.xlabel('Energy (eV)')
-    plotobject.ylabel('Counts (1/s)')
-    plotobject.grid(True)
-    plotobject.title(title)
+    plt.plot(data[:,0],data[:,1],'b-')
+    plt.xlabel('Energy (eV)')
+    plt.ylabel('Counts (1/s)')
+    plt.grid(True)
+    plt.title(title)
 
-def plot_fit(plotobject, data, fitfunc, parameters):
+def plot_fit(data, fitfunc, parameters):
     #create equidistant x points for plotting the fit
     fitx = linspace(data[:,0].min(), data[:,0].max(), len(data[:,0]))
 
     #plot
-    plotobject.plot(fitx, fitfunc(parameters, fitx), 'r--')
+    plt.plot(fitx, fitfunc(parameters, fitx), 'r--')
 
 def fit_function_to_data(data, fitfunc, initial_parameters):
     #data has to be a numpy array

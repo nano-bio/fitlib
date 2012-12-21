@@ -36,7 +36,7 @@ data = fl.readfile('AE_data/AE_HMX_H2O.txt')
 
 fig1 = plt.figure()
 
-fl.plotES(plt,data,'bla')
+fl.plotES(data, 'bla')
 
 p0 = [0]*4
 p0[0] = 50
