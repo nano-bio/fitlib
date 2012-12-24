@@ -4,10 +4,9 @@ from scipy import *
 from scipy.special import *
 
 from scipy import optimize
+import matplotlib.pyplot as plt
 
 from operator import itemgetter
-
-import matplotlib.pyplot as plt
 
 import re
 import os
@@ -19,12 +18,13 @@ def pbdv_fa(x,y):
     a, b = pbdv(x, y)
     return a
 
-def get_AE_func(sigma, fixed = ''):
+def get_AE_func(sigma, alpha = None):
     #this function defines fit functions for appearance energies
     #they are of the form b + (x-AE)^a convoluted with a gaussian
     #see file docs/AE_conv.pdf for details
-    if fixed == 'alpha':
-        fitfunc = lambda p, x: p[0] + p[1]*exp(-1.0/(4.0*sigma**2)*(p[2]-x)**2)*pbdv_fa(-(alpha+1), (p[2]-x)/sigma)
+
+    if alpha is not None:
+        fitfunc = lambda p, x: p[0] + p[1]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[2]-x)**2)*pbdv_fa(-(alpha+1), (p[2]-x)/sigma)
     else:
         fitfunc = lambda p, x: p[0] + p[1]*sigma**p[2]*gamma(p[2]+1)*exp(-1.0/(4.0*sigma**2)*(p[3]-x)**2)*pbdv_fa(-(p[2]+1), (p[3]-x)/sigma)
 
@@ -63,13 +63,13 @@ def readfile(filename):
         #relative path?
         f = open(filename,'r')
     except:
-        #probably not. let us try a full patch
+        #probably not. let us try a full path
         filename = os.path.join(os.path.dirname(__file__), filename)
         try:
             f = open(filename,'r')
         except:
             #ok this thing cannot be read
-            raise SystemExit('Could not read file')
+            raise IOError('Could not read file')
         
     #we need to check if a line is actually useful
     num_tab_num = re.compile('^[0-9]+\.[0-9]+\\t[0-9]+\.[0-9]+.*[\\r]?\\n$')
@@ -189,7 +189,7 @@ def plot_fit(data, fitfunc, parameters):
     fitx = linspace(data[:,0].min(), data[:,0].max(), len(data[:,0]))
 
     #plot
-    plt.plot(fitx, fitfunc(parameters, fitx), 'r--')
+    plt.plot(fitx, fitfunc(parameters, fitx), 'r--', linewidth=3)
 
 def fit_function_to_data(data, fitfunc, initial_parameters):
     #data has to be a numpy array
