@@ -11,6 +11,8 @@ from operator import itemgetter
 import re
 import os
 
+import helplib as hl
+
 #library for plotting and fitting
 
 def pbdv_fa(x,y):
@@ -54,22 +56,10 @@ def readfile(filename):
 
     #create empty list
     a = []
-
-	#adjust file path in case we're running on fucking windows
-    filename = os.path.normcase(filename)
-	
-    #open file
     try:
-        #relative path?
-        f = open(filename,'r')
-    except:
-        #probably not. let us try a full path
-        filename = os.path.join(os.path.dirname(__file__), filename)
-        try:
-            f = open(filename,'r')
-        except:
-            #ok this thing cannot be read
-            raise IOError('Could not read file')
+        f = hl.openfile(filename)
+    except IOError:
+        raise IOError
         
     #we need to check if a line is actually useful
     num_tab_num = re.compile('^[0-9]+\.[0-9]+\\t[0-9]+\.[0-9]+.*[\\r]?\\n$')
@@ -85,6 +75,9 @@ def readfile(filename):
 
     #convert list a to float array
     data = array(a,dtype = float)
+
+    if len(data) == 0:
+        raise IOError('File did not contain any valid lines')
 
     #close file
     f.close()

@@ -7,6 +7,7 @@ from scipy.special import *
 from scipy import optimize
 
 import loglib
+import helplib as hl
 
 import argparse
 import os, sys
@@ -55,15 +56,26 @@ if args.alpha is not None:
 #we need this to make a filelist list, that contains filenames
 filelist = []
 
+#here we go through the 3 cases: filename, folder, filelist
+
 #this is the easiest case - add the filename to the filelist
 if args.filename is not None:
     filelist.append([args.filename, os.path.basename(args.filename)])
+
 elif args.folder is not None:
+
     #lets go through that folder and add every filename to the filelist
     caldirlist = os.listdir(args.folder)
 
     for file in caldirlist:
         filelist.append([os.path.join(args.folder,file), file])
+
+elif args.filelist is not None:
+
+    #in this we have to read the list of filenames in a file
+    f = hl.openfile(args.filelist)
+    for line in f:
+        filelist.append([line.strip('\r\n'), line.strip('\r\n')])        
 
 #if there are to many plots, we shouldn't show them all
 if len(filelist) > 5:
@@ -71,44 +83,50 @@ if len(filelist) > 5:
 
 #let's walk our filelist
 for file in filelist:
+    #this variable is set to false if we encounter a non-readable file
+    usefulfile = True
+
     try:
         data = fl.readfile(file[0])
     except IOError:
+        usefulfile = False
         log.ioerror(file[0])
 
-    #in case we don't want any graphical outpot whatsoever, we skip this, in order to avoid errors from plt
-    if (args.noshow is False) or (args.nosave is False):
-        fig1 = plt.figure()
-        fl.plotES(data, file[1])
+    if usefulfile is True:
 
-    #if we fit alpha, we need 4 fit parameters with (very rough) guesses
-    if args.alpha is None:
-        p0 = [0]*4
-        p0[0] = 50
-        p0[1] = 1
-        p0[2] = 1
-        p0[3] = 20
-    else:
-        p0 = [0]*3
-        p0[0] = 50
-        p0[1] = 1
-        p0[2] = 20
+        #in case we don't want any graphical outpot whatsoever, we skip this, in order to avoid errors from plt
+        if (args.noshow is False) or (args.nosave is False):
+            fig1 = plt.figure()
+            fl.plotES(data, file[1])
 
-    #actually fit
-    p1 = fl.fit_function_to_data(data, ae_func, p0)
+        #if we fit alpha, we need 4 fit parameters with (very rough) guesses
+        if args.alpha is None:
+            p0 = [0]*4
+            p0[0] = 50
+            p0[1] = 1
+            p0[2] = 1
+            p0[3] = 20
+        else:
+            p0 = [0]*3
+            p0[0] = 50
+            p0[1] = 1
+            p0[2] = 20
 
-    #log success
-    if p1 is not None:
-        log.write('Fitted file %s with success.' % file[0])
-        log.AE_fit_p(p1)
-    else:
-        log.write('Failed with fitting of file %s.' % file[0])
+        #actually fit
+        p1 = fl.fit_function_to_data(data, ae_func, p0)
 
-    #we don't even need to plot if we neither save nor show
-    if (args.noshow is False) or (args.nosave is False):
-        fl.plot_fit(data, ae_func, p1)
-    if args.nosave is False:
-        plt.savefig('output/' + file[1] + '.pdf', format='pdf')
+        #log success
+        if p1 is not None:
+            log.write('Fitted file %s with success.' % file[0])
+            log.AE_fit_p(p1)
+        else:
+            log.write('Failed with fitting of file %s.' % file[0])
+
+        #we don't even need to plot if we neither save nor show
+        if (args.noshow is False) or (args.nosave is False):
+            fl.plot_fit(data, ae_func, p1)
+        if args.nosave is False:
+            plt.savefig('output/' + file[1] + '.pdf', format='pdf')
 
 #showing the plot happens in the end, so to show all windows at the same time and not block the script execution
 if args.noshow is False:
