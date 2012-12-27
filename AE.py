@@ -126,7 +126,8 @@ for file in filelist:
         if (args.noshow is False) or (args.nosave is False):
             fl.plot_fit(data, ae_func, p1)
         if args.nosave is False:
-            plt.savefig('output/' + file[1] + '.pdf', format='pdf')
+            plotfile = os.path.join(os.path.dirname(__file__), 'output/' + file[1] + '.pdf')
+            plt.savefig(plotfile, format='pdf')
 
 #showing the plot happens in the end, so to show all windows at the same time and not block the script execution
 if args.noshow is False:

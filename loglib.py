@@ -13,20 +13,22 @@ class Log:
 
 	    #adjust file path in case we're running on fucking windows
         self.filename = os.path.normcase(filename)
+                
+        #make an absolute path for fucking windows
+        self.filename = os.path.join(os.path.dirname(__file__),self.filename)
 
         #see if the given or standard logfile can be opened
         try:
-            self.fh = open(filename, 'w')
+            self.fh = open(self.filename, 'w')
         except IOError:
             #maybe it is supposed to be in a subdirectory and we have to the create said directory
-            directory = os.path.dirname(filename)
+            directory = os.path.dirname(self.filename)
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
             try:
-                self.fh = open(filename, 'w')
-            #still not working
-            except IOError:
+                self.fh = open(self.filename, 'w')
+            except:
                 self.nologfile = True
 
         if self.nologfile is not True:
