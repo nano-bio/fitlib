@@ -69,7 +69,7 @@ def readfile(filename):
         raise IOError
         
     #we need to check if a line is actually useful
-    num_tab_num = re.compile('^[0-9]+\.[0-9]+\\t[0-9]+\.[0-9]+.*[\\r]?\\n$')
+    num_tab_num = re.compile('^[0-9]+((\.){1}[0-9]+)?\\t[0-9]+((\.){1}[0-9]+)?.*[\\r]?\\n$')
 
     #read file, skip comment lines
     for line in f:
@@ -208,5 +208,25 @@ def fit_function_to_data(data, fitfunc, initial_parameters):
     else:
         return None
     
+def cutarray(data, lowerlim = None, upperlim = None):
+    #this function cuts an array and returns it
+    #if lowerlim or upperlim are not defined, the maximum is assumed
+        
+    if lowerlim is None:
+        lowerlim = data[:,0].min()
+        
+    if upperlim is None:
+        upperlim = data[:,0].max()
+        
+    lowerlim = float64(lowerlim)
+    upperlim = float64(upperlim)
     
+    newdata = []
 
+    for point in data:
+        if (point[0] > lowerlim) and (point[0] < upperlim):
+            newdata.append(point)
+            
+    data = array(newdata, dtype = float)
+    
+    return data
