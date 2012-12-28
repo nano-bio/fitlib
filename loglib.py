@@ -3,6 +3,8 @@
 #library for logging stuff
 
 import os
+import sys
+import datetime
 
 class Log:
     """This class provides logging functions"""
@@ -15,8 +17,8 @@ class Log:
         self.filename = os.path.normcase(filename)
                 
         #make an absolute path for fucking windows
-        self.filename = os.path.join(os.path.dirname(__file__),self.filename)
-
+        self.filename = os.path.join(os.path.dirname(sys.argv[0]), self.filename)
+        
         #see if the given or standard logfile can be opened
         try:
             self.fh = open(self.filename, 'w')
@@ -30,9 +32,12 @@ class Log:
                 self.fh = open(self.filename, 'w')
             except:
                 self.nologfile = True
+                
+        #make a timestamp
+        self.starttime = datetime.datetime.now()
 
         if self.nologfile is not True:
-            self.write('New logfile created')
+            self.write('New logfile created. It is now: %s' % self.starttime)
         else:
             self.write('Warning! Could not create logfile! Giving all output to stdout!')
 
@@ -46,7 +51,9 @@ class Log:
         self.write('File %s could not be read.' % filename)
 
     def stop(self):
-        self.write('Finished.')
+        self.stoptime = datetime.datetime.now()
+        timedelta = self.stoptime - self.starttime
+        self.write('Finished. Processing took %s' % timedelta)
         self.fh.close()
 
     def AE_fit_p(self, params):

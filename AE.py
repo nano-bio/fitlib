@@ -5,6 +5,8 @@ from scipy import *
 
 from scipy.special import *
 from scipy import optimize
+#to compile on windows
+from scipy.sparse.csgraph import _validation
 
 import loglib
 import helplib as hl
@@ -75,7 +77,7 @@ elif args.filelist is not None:
     #in this we have to read the list of filenames in a file
     f = hl.openfile(args.filelist)
     for line in f:
-        filelist.append([line.strip('\r\n'), line.strip('\r\n')])        
+        filelist.append([line.strip('\r\n'), os.path.basename(line.strip('\r\n'))])
 
 #if there are to many plots, we shouldn't show them all
 if len(filelist) > 5:
@@ -126,7 +128,7 @@ for file in filelist:
         if (args.noshow is False) or (args.nosave is False):
             fl.plot_fit(data, ae_func, p1)
         if args.nosave is False:
-            plotfile = os.path.join(os.path.dirname(__file__), 'output/' + file[1] + '.pdf')
+            plotfile = os.path.join(os.path.dirname(sys.argv[0]), 'output/' + file[1] + '.pdf')
             plt.savefig(plotfile, format='pdf')
 
 #showing the plot happens in the end, so to show all windows at the same time and not block the script execution

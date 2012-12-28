@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import sys
 
 def openfile(filename):
     #adjust file path in case we're running on fucking windows
@@ -13,7 +14,7 @@ def openfile(filename):
         return f
     except:
         #probably not. let us try a full path
-        filename = os.path.join(os.path.dirname(__file__), filename)
+        filename = os.path.join(os.path.dirname(sys.argv[0]), filename)
         try:
             f = open(filename,'r')
             return f
