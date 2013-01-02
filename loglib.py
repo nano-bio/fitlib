@@ -56,8 +56,8 @@ class Log:
         self.write('Finished. Processing took %s' % timedelta)
         self.fh.close()
 
-    def AE_fit_p(self, params):
-        if len(params) == 3:
-            self.write('AE: %f (Alpha fixed)' % params[2])
-        elif len(params) == 4:
-            self.write('Alpha: %s, AE: %s' % (params[2], params[3]))
+    def AE_fit_p(self, params, args):
+        if args.alpha is not None:
+            self.write('AE: %f (Alpha fixed)' % params[1])
+        else:
+            self.write('Alpha: %s, AE: %s' % (params[3], params[1]))

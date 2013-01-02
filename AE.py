@@ -5,14 +5,17 @@ from scipy import *
 
 from scipy.special import *
 from scipy import optimize
-#to compile on windows
-from scipy.sparse.csgraph import _validation
 
 import loglib
 import helplib as hl
 
 import argparse
 import os, sys
+import re
+
+#to compile on windows
+if os.name == 'nt':
+    from scipy.sparse.csgraph import _validation
 
 #instanciate a log object
 log = loglib.Log()
@@ -29,6 +32,7 @@ filegroup.add_argument("--filelist", help="Specify a file that includes a list o
 #those are optional
 parser.add_argument("--alpha", "-a", help="Specify the exponent for the fit function. If not specified, it will be fitted as well", type = float)
 parser.add_argument("--sigma", "-s", help="Specify the FWHM-resolution in eV. If not specified, 1 eV will be assumed", default = 1.0, type = float)
+parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
 parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_true')
 
@@ -49,7 +53,7 @@ import matplotlib.pyplot as plt
 import fitlib as fl
 
 #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
-ae_func = fl.get_AE_func(sigma, alpha)
+ae_func = fl.get_AE_func(sigma, alpha, args.linearbackground)
 
 #Log if we have a fixed alpha
 if args.alpha is not None:
@@ -76,8 +80,21 @@ elif args.filelist is not None:
 
     #in this we have to read the list of filenames in a file
     f = hl.openfile(args.filelist)
+    
+    #we can also compile a regex for the optional arguments
+    argre = re.compile('^[a-z]+=[0-9]+(\.)?[0-9]?$')
+    
     for line in f:
-        filelist.append([line.strip('\r\n'), os.path.basename(line.strip('\r\n'))])
+        #we split the array by whitespaces or tabs (split tries both)
+        line = line.strip('\r\n').split()
+        #first argument should be the filename, therefore appending it to a temp array together with the full path
+        linearray = [line[0], os.path.basename(line[0])]
+        #first argument of the list out
+        del line[0]
+        #append rest (could also be zero length, doesn't matter)
+        linearray = linearray + line
+        #append the whole list to the filelist
+        filelist.append(linearray)
 
 #if there are to many plots, we shouldn't show them all
 if len(filelist) > 5:
@@ -100,19 +117,58 @@ for file in filelist:
         if (args.noshow is False) or (args.nosave is False):
             fig1 = plt.figure()
             fl.plotES(data, file[1])
+        
+        #if there were arguments specified in the filelist, we set them here
+        if len(file) > 2:
+            #by default we don't cut away data
+            min = None
+            max = None
+            offset = 10
+            ea = 20
+            
+            #loop through all given arguments
+            for arg in file:
+                #are they matching "arg=value" where value is a float or int
+                if argre.match(arg):
+                    #split them up
+                    arg = arg.split('=', 2)
+                    if arg[0] == 'min':
+                        min = arg[1]
+                    if arg[0] == 'max':
+                        max = arg[1]
+                    if arg[0] == 'offset':
+                        offset = float64(arg[1])
+                    if arg[0] == 'ea':
+                        ea = float64(arg[1])
+                        
+        #doesn't do anything if min and max are None (and they are by default)
+        data = fl.cutarray(data, lowerlim = min, upperlim = max)
 
-        #if we fit alpha, we need 4 fit parameters with (very rough) guesses
-        if args.alpha is None:
+        #depending on the situation of alpha and the lin background we need different amounts of params
+        if (args.alpha is None) and (args.linearbackground is False):
             p0 = [0]*4
-            p0[0] = 50
-            p0[1] = 1
+            p0[0] = offset
+            p0[1] = ea
             p0[2] = 1
-            p0[3] = 20
-        else:
+            p0[3] = 1
+        elif (args.alpha is not None) and (args.linearbackground is False):
             p0 = [0]*3
-            p0[0] = 50
-            p0[1] = 1
-            p0[2] = 20
+            p0[0] = offset
+            p0[1] = ea
+            p0[2] = 1
+        elif (args.alpha is None) and (args.linearbackground is True):
+            p0 = [0]*5
+            p0[0] = offset
+            p0[1] = ea
+            p0[2] = 1
+            p0[3] = 1
+            p0[4] = 1
+        elif (args.alpha is not None) and (args.linearbackground is True):
+            p0 = [0]*4
+            p0[0] = offset
+            p0[1] = ea
+            p0[2] = 1
+            p0[3] = 1
 
         #actually fit
         p1 = fl.fit_function_to_data(data, ae_func, p0)
@@ -120,7 +176,7 @@ for file in filelist:
         #log success
         if p1 is not None:
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1)
+            log.AE_fit_p(p1, args)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
 
@@ -131,9 +187,9 @@ for file in filelist:
             plotfile = os.path.join(os.path.dirname(sys.argv[0]), 'output/' + file[1] + '.pdf')
             plt.savefig(plotfile, format='pdf')
 
+#done
+log.stop()
+
 #showing the plot happens in the end, so to show all windows at the same time and not block the script execution
 if args.noshow is False:
     plt.show()
-
-#done
-log.stop()

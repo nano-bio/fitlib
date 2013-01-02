@@ -25,17 +25,21 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
     #they are of the form b + (x-AE)^a convoluted with a gaussian
     #see file docs/AE_conv.pdf for details
     
+    sigma = sigma / 2.35482
+    
+    #0 = offset, 1 is EA, 2 is a factor, 3 is alpha or the linear bg, 4 is the linear background
+    
     if linearbackground is False:
         if alpha is not None:
-            fitfunc = lambda p, x: p[0] + p[1]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[2]-x)**2)*pbdv_fa(-(alpha+1), (p[2]-x)/sigma)
+            fitfunc = lambda p, x: p[0] + p[2]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(alpha+1), (p[1]-x)/sigma)
         else:
-            fitfunc = lambda p, x: p[0] + p[1]*sigma**p[2]*gamma(p[2]+1)*exp(-1.0/(4.0*sigma**2)*(p[3]-x)**2)*pbdv_fa(-(p[2]+1), (p[3]-x)/sigma)
+            fitfunc = lambda p, x: p[0] + p[2]*sigma**p[3]*gamma(p[3]+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(p[3]+1), (p[1]-x)/sigma)
     elif linearbackground is True:
         #this one supports a linear background. needs one more parameter
         if alpha is not None:
-            fitfunc = lambda p, x: p[0] + p[1]*x + p[2]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[3]-x)**2)*pbdv_fa(-(alpha+1), (p[3]-x)/sigma)
+            fitfunc = lambda p, x: p[0] + p[3]*x + p[2]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(alpha+1), (p[1]-x)/sigma)
         else:
-            fitfunc = lambda p, x: p[0] + p[1]*x + p[2]*sigma**p[3]*gamma(p[3]+1)*exp(-1.0/(4.0*sigma**2)*(p[4]-x)**2)*pbdv_fa(-(p[3]+1), (p[4]-x)/sigma)    
+            fitfunc = lambda p, x: p[0] + p[4]*x + p[2]*sigma**p[3]*gamma(p[3]+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(p[3]+1), (p[1]-x)/sigma)   
 
     return fitfunc
 
