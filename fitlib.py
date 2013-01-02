@@ -221,7 +221,7 @@ def cutarray(data, lowerlim = None, upperlim = None):
         
     if upperlim is None:
         upperlim = data[:,0].max()
-        
+
     lowerlim = float64(lowerlim)
     upperlim = float64(upperlim)
     

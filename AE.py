@@ -117,15 +117,16 @@ for file in filelist:
         if (args.noshow is False) or (args.nosave is False):
             fig1 = plt.figure()
             fl.plotES(data, file[1])
+            
+        offset = 10
+        ea = 20
         
         #if there were arguments specified in the filelist, we set them here
         if len(file) > 2:
             #by default we don't cut away data
             min = None
             max = None
-            offset = 10
-            ea = 20
-            
+
             #loop through all given arguments
             for arg in file:
                 #are they matching "arg=value" where value is a float or int
@@ -141,8 +142,8 @@ for file in filelist:
                     if arg[0] == 'ea':
                         ea = float64(arg[1])
                         
-        #doesn't do anything if min and max are None (and they are by default)
-        data = fl.cutarray(data, lowerlim = min, upperlim = max)
+            #doesn't do anything if min and max are None (and they are by default)
+            data = fl.cutarray(data, lowerlim = min, upperlim = max)
 
         #depending on the situation of alpha and the lin background we need different amounts of params
         if (args.alpha is None) and (args.linearbackground is False):
