@@ -8,8 +8,15 @@ import datetime
 
 class Log:
     """This class provides logging functions"""
-    def __init__(self, filename = 'output/output.log'):
-
+    def __init__(self, filename = None):
+    
+        #make a timestamp
+        self.starttime = datetime.datetime.now()
+        
+        #create a default
+        if filename is None:
+            filename = ('output/output_%s.log' % self.starttime.strftime('%d_%m_%Y_%Hh%Mm%S'))
+        
         #let's assume we can create a logfile
         self.nologfile = False
 
@@ -32,9 +39,6 @@ class Log:
                 self.fh = open(self.filename, 'w')
             except:
                 self.nologfile = True
-                
-        #make a timestamp
-        self.starttime = datetime.datetime.now()
 
         if self.nologfile is not True:
             self.write('New logfile created. It is now: %s' % self.starttime)
@@ -54,10 +58,39 @@ class Log:
         self.stoptime = datetime.datetime.now()
         timedelta = self.stoptime - self.starttime
         self.write('Finished. Processing took %s' % timedelta)
-        self.fh.close()
+        if self.nologfile is not True:
+            self.fh.close()
 
-    def AE_fit_p(self, params, args):
-        if args.alpha is not None:
+    def AE_fit_p(self, params):
+        if self.cmdargs.alpha is not None:
             self.write('AE: %f (Alpha fixed)' % params[1])
         else:
             self.write('Alpha: %s, AE: %s' % (params[3], params[1]))
+            
+    def printargs(self):
+        if self.cmdargs.filename is not None:
+            self.write('AE.py is in filename-mode.')
+        elif self.cmdargs.folder is not None:
+            self.write('AE.py is in folder-mode.')
+        elif self.cmdargs.filelist is not None:
+            self.write('AE.py is in filelist-mode.')
+            
+        if self.cmdargs.alpha is not None:
+            self.write('Alpha was set in the command line to %s.' % self.cmdargs.alpha)
+            
+        if self.cmdargs.sigma is not None:
+            self.write('Energy resolution was set in the command line to %s eV.' % self.cmdargs.sigma)
+            
+        if self.cmdargs.linearbackground is True:
+            self.write('AE.py was set to fit a linear background (non-constant) from command line.')
+              
+        if self.cmdargs.noshow is True:
+            self.write('AE.py was set to not show any plots from command line.')
+            
+        if self.cmdargs.nosave is True:
+            self.write('AE.py was set to not save any plots from command line.')
+            
+    def setargs(self, cmdargs, printargs = True):
+        self.cmdargs = cmdargs
+        if printargs is True:
+            self.printargs()

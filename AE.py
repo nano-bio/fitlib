@@ -39,6 +39,8 @@ parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_t
 #parse it
 args = parser.parse_args()
 
+log.setargs(args)
+
 #now we can assign variables from the given arguments
 sigma = args.sigma
 alpha = args.alpha
@@ -177,7 +179,7 @@ for file in filelist:
         #log success
         if p1 is not None:
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, args)
+            log.AE_fit_p(p1)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
 
