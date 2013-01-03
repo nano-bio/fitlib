@@ -13,6 +13,8 @@ import os
 
 import helplib as hl
 
+from math import sqrt
+
 #library for plotting and fitting
 
 def pbdv_fa(x,y):
@@ -203,10 +205,15 @@ def fit_function_to_data(data, fitfunc, initial_parameters):
 
     # Distance to the target function
     errfunc = lambda p, x, y: fitfunc(p, x) - y
+    
+    #calculate the sqrt of the data values for the fit weights
+    vecsqrt = vectorize(sqrt)
+    vecabs = vectorize(abs)
+    weights = vecsqrt(vecabs(data[:,1] + 1.0))
 
     #fit
-    p1, success = optimize.leastsq(errfunc, initial_parameters[:], args=(data[:,0],data[:,1]))
-
+    p1, success = optimize.leastsq(errfunc, initial_parameters[:], args = (data[:,0],data[:,1]), diag = weights)
+    
     if success:
         return p1
     else:
