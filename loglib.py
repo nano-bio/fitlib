@@ -61,9 +61,9 @@ class Log:
         if self.nologfile is not True:
             self.fh.close()
 
-    def AE_fit_p(self, params):
-        if self.cmdargs.alpha is not None:
-            self.write('AE: %f (Alpha fixed)' % params[1])
+    def AE_fit_p(self, params, alpha):
+        if alpha is not None:
+            self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
         else:
             self.write('Alpha: %s, AE: %s' % (params[3], params[1]))
             

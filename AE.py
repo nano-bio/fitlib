@@ -44,6 +44,7 @@ log.setargs(args)
 #now we can assign variables from the given arguments
 sigma = args.sigma
 alpha = args.alpha
+linearbackground = args.linearbackground
 
 #this is tricky. if we don't plot, we need to use a different backend for matplotlib, as the normal one crashes if plot is not called
 import matplotlib
@@ -53,13 +54,6 @@ if (args.noshow is True) and (args.nosave is False):
 #now we can import fitlib and matplotlib completely, because the backend is now set
 import matplotlib.pyplot as plt
 import fitlib as fl
-
-#retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
-ae_func = fl.get_AE_func(sigma, alpha, args.linearbackground)
-
-#Log if we have a fixed alpha
-if args.alpha is not None:
-    log.write('Using fixed Alpha: %s' % alpha)
 
 #we need this to make a filelist list, that contains filenames
 filelist = []
@@ -72,11 +66,14 @@ if args.filename is not None:
 
 elif args.folder is not None:
 
+    #adjust file path in case we're running on fucking windows
+    args.folder = os.path.normcase(args.folder)
+
     #lets go through that folder and add every filename to the filelist
     caldirlist = os.listdir(args.folder)
 
     for file in caldirlist:
-        filelist.append([os.path.join(args.folder,file), file])
+        filelist.append([os.path.join(args.folder, file), file])
 
 elif args.filelist is not None:
 
@@ -84,12 +81,12 @@ elif args.filelist is not None:
     f = hl.openfile(args.filelist)
     
     #we can also compile a regex for the optional arguments
-    argre = re.compile('^[a-z]+=[0-9]+(\.)?[0-9]?$')
+    argre = re.compile('^[a-z]+=(([0-9]+(\.)?[0-9]?)|(True|False))+$')
     
     for line in f:
         #we split the array by whitespaces or tabs (split tries both)
         line = line.strip('\r\n').split()
-        #first argument should be the filename, therefore appending it to a temp array together with the full path
+        #first argument should be the filename + path, therefore appending it to a temp array together with the filename
         linearray = [line[0], os.path.basename(line[0])]
         #first argument of the list out
         del line[0]
@@ -98,9 +95,10 @@ elif args.filelist is not None:
         #append the whole list to the filelist
         filelist.append(linearray)
 
-#if there are to many plots, we shouldn't show them all
+#if there are too many plots, we shouldn't show them all
 if len(filelist) > 5:
     args.noshow = True
+    log.write('Not showing any plots, because there are more than 5 files to deal with.')
 
 #let's walk our filelist
 for file in filelist:
@@ -115,11 +113,12 @@ for file in filelist:
 
     if usefulfile is True:
 
-        #in case we don't want any graphical outpot whatsoever, we skip this, in order to avoid errors from plt
+        #in case we don't want any graphical output whatsoever, we skip this, in order to avoid errors from plt
         if (args.noshow is False) or (args.nosave is False):
             fig1 = plt.figure()
             fl.plotES(data, file[1])
-            
+        
+        #default values for initial guesses
         offset = 10
         ea = 20
         
@@ -128,6 +127,10 @@ for file in filelist:
             #by default we don't cut away data
             min = None
             max = None
+            
+            #reset other values that are read from the command line
+            alpha = None
+            linearbackground = False
 
             #loop through all given arguments
             for arg in file:
@@ -143,35 +146,54 @@ for file in filelist:
                         offset = float64(arg[1])
                     if arg[0] == 'ea':
                         ea = float64(arg[1])
+                    if arg[0] == 'alpha':
+                        alpha = float64(arg[1])
+                    if arg[0] == 'linearbackground':
+                        if arg[1] == 'True':
+                            linearbackground = True
+                        elif arg[1] == 'False':
+                            linearbackground = False
                         
             #doesn't do anything if min and max are None (and they are by default)
             data = fl.cutarray(data, lowerlim = min, upperlim = max)
+            
+        #if alpha or linearbackground were set from commandline, we overwrite the settings from the file
+        if args.alpha is not None:
+            alpha = args.alpha
+            log.write('Overwriting alpha from command line!')
+            
+        if args.linearbackground is True:
+            linearbackground = args.linearbackground
+            log.write('Overwriting linear background from command line!')
 
         #depending on the situation of alpha and the lin background we need different amounts of params
-        if (args.alpha is None) and (args.linearbackground is False):
+        if (alpha is None) and (linearbackground is False):
             p0 = [0]*4
             p0[0] = offset
             p0[1] = ea
             p0[2] = 1
             p0[3] = 1
-        elif (args.alpha is not None) and (args.linearbackground is False):
+        elif (alpha is not None) and (linearbackground is False):
             p0 = [0]*3
             p0[0] = offset
             p0[1] = ea
             p0[2] = 1
-        elif (args.alpha is None) and (args.linearbackground is True):
+        elif (alpha is None) and (linearbackground is True):
             p0 = [0]*5
             p0[0] = offset
             p0[1] = ea
             p0[2] = 1
             p0[3] = 1
             p0[4] = 1
-        elif (args.alpha is not None) and (args.linearbackground is True):
+        elif (alpha is not None) and (linearbackground is True):
             p0 = [0]*4
             p0[0] = offset
             p0[1] = ea
             p0[2] = 1
             p0[3] = 1
+            
+        #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
+        ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
 
         #actually fit
         p1 = fl.fit_function_to_data(data, ae_func, p0)
@@ -179,7 +201,7 @@ for file in filelist:
         #log success
         if p1 is not None:
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1)
+            log.AE_fit_p(p1, alpha)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
 
