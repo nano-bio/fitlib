@@ -61,11 +61,20 @@ class Log:
         if self.nologfile is not True:
             self.fh.close()
 
-    def AE_fit_p(self, params, alpha):
+    def AE_fit_p(self, params, alpha, min, max, linearbackground):
         if alpha is not None:
             self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
         else:
             self.write('Alpha: %s, AE: %s' % (params[3], params[1]))
+        
+        if min is not None:
+            self.write('Fit was started at %s eV.' % min)
+            
+        if max is not None:
+            self.write('Fit was started at %s eV.' % max)
+            
+        if linearbackground is True:
+            self.write('A linear background (non-constant) was used.')
             
     def printargs(self):
         if self.cmdargs.filename is not None:

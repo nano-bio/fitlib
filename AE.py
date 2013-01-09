@@ -86,14 +86,15 @@ elif args.filelist is not None:
     for line in f:
         #we split the array by whitespaces or tabs (split tries both)
         line = line.strip('\r\n').split()
-        #first argument should be the filename + path, therefore appending it to a temp array together with the filename
-        linearray = [line[0], os.path.basename(line[0])]
-        #first argument of the list out
-        del line[0]
-        #append rest (could also be zero length, doesn't matter)
-        linearray = linearray + line
-        #append the whole list to the filelist
-        filelist.append(linearray)
+        if len(line) > 0:
+            #first argument should be the filename + path, therefore appending it to a temp array together with the filename
+            linearray = [line[0], os.path.basename(line[0])]
+            #first argument of the list out
+            del line[0]
+            #append rest (could also be zero length, doesn't matter)
+            linearray = linearray + line
+            #append the whole list to the filelist
+            filelist.append(linearray)
 
 #if there are too many plots, we shouldn't show them all
 if len(filelist) > 5:
@@ -200,8 +201,9 @@ for file in filelist:
 
         #log success
         if p1 is not None:
+            log.write('============================')
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha)
+            log.AE_fit_p(p1, alpha, min, max, linearbackground)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
 
@@ -209,7 +211,21 @@ for file in filelist:
         if (args.noshow is False) or (args.nosave is False):
             fl.plot_fit(data, ae_func, p1)
         if args.nosave is False:
-            plotfile = os.path.join(os.path.dirname(sys.argv[0]), 'output/' + file[1] + '.pdf')
+            #we need to create a more speaking filename
+            additions = ''
+            if alpha is not None:
+                additions += '_alpha=%s' % alpha
+            
+            if min is not None:
+                additions += '_min=%s' % min
+                
+            if max is not None:
+                additions += '_min=%s' % max
+                
+            if linearbackground is True:
+                additions += '_linearbackground'
+                
+            plotfile = os.path.join(os.path.dirname(sys.argv[0]), 'output/' + file[1] + additions + '.pdf')
             plt.savefig(plotfile, format='pdf')
 
 #done
