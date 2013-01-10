@@ -8,14 +8,16 @@ import datetime
 
 class Log:
     """This class provides logging functions"""
-    def __init__(self, filename = None):
+    def __init__(self, filename = None, outputfolder = 'output'):
     
         #make a timestamp
         self.starttime = datetime.datetime.now()
         
+        self.outputfolder = outputfolder
+        
         #create a default
         if filename is None:
-            filename = ('output/output_%s.log' % self.starttime.strftime('%d_%m_%Y_%Hh%Mm%S'))
+            filename = (self.outputfolder + '/output_%s.log' % self.starttime.strftime('%d_%m_%Y_%Hh%Mm%S'))
         
         #let's assume we can create a logfile
         self.nologfile = False

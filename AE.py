@@ -17,9 +17,6 @@ import re
 if os.name == 'nt':
     from scipy.sparse.csgraph import _validation
 
-#instanciate a log object
-log = loglib.Log()
-
 #using the argparse module to make use of command line options
 parser = argparse.ArgumentParser(description="Fit Appearance Energy measurements and extract the AE")
 
@@ -35,16 +32,29 @@ parser.add_argument("--sigma", "-s", help="Specify the FWHM-resolution in eV. If
 parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
 parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_true')
+parser.add_argument("--outputfolder", help="This option can be used to output files to a specific directory.")
+parser.add_argument('--version', action='version', version='r1')
 
 #parse it
 args = parser.parse_args()
-
-log.setargs(args)
 
 #now we can assign variables from the given arguments
 sigma = args.sigma
 alpha = args.alpha
 linearbackground = args.linearbackground
+
+#we need an output folder. default is 'output'
+outputfolder = 'output'
+if args.outputfolder is not None:
+    outputfolder = args.outputfolder.rstrip('/')
+    if not os.path.exists(outputfolder):
+        os.makedirs(outputfolder)
+    
+#instanciate a log object (now that we know where)
+log = loglib.Log(outputfolder = outputfolder)
+
+#set arguments in the log object
+log.setargs(args)
 
 #this is tricky. if we don't plot, we need to use a different backend for matplotlib, as the normal one crashes if plot is not called
 import matplotlib
@@ -220,12 +230,12 @@ for file in filelist:
                 additions += '_min=%s' % min
                 
             if max is not None:
-                additions += '_min=%s' % max
+                additions += '_max=%s' % max
                 
             if linearbackground is True:
                 additions += '_linearbackground'
                 
-            plotfile = os.path.join(os.path.dirname(sys.argv[0]), 'output/' + file[1] + additions + '.pdf')
+            plotfile = os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf')
             plt.savefig(plotfile, format='pdf')
 
 #done
