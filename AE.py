@@ -235,8 +235,9 @@ for file in filelist:
             if linearbackground is True:
                 additions += '_linearbackground'
                 
-            plotfile = os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf')
+            plotfile = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf'))
             plt.savefig(plotfile, format='pdf')
+            log.write('Plotted to file: %s' % plotfile)
 
 #done
 log.stop()
