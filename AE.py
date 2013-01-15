@@ -131,7 +131,7 @@ for file in filelist:
         
         #default values for initial guesses
         offset = 10
-        ea = 20
+        ea = 8
         
         #if there were arguments specified in the filelist, we set them here
         if len(file) > 2:
