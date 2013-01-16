@@ -110,6 +110,9 @@ elif args.filelist is not None:
 if len(filelist) > 5:
     args.noshow = True
     log.write('Not showing any plots, because there are more than 5 files to deal with.')
+    
+#one empty line in the logfile
+log.emptyline()
 
 #let's walk our filelist
 for file in filelist:
@@ -167,6 +170,12 @@ for file in filelist:
                         
             #doesn't do anything if min and max are None (and they are by default)
             data = fl.cutarray(data, lowerlim = min, upperlim = max)
+            
+        #if the standard guess of ea is outside the data range, we set it to the middle of the range
+        datamin = float64(data[:,0].min())
+        datamax = float64(data[:,0].max())
+        if (ea < datamin) or (ea > datamax):
+            ea = (datamax - datamin) / 2 + datamin
             
         #if alpha or linearbackground were set from commandline, we overwrite the settings from the file
         if args.alpha is not None:

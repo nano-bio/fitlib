@@ -57,6 +57,7 @@ class Log:
         self.write('File %s could not be read.' % filename)
 
     def stop(self):
+        self.emptyline()
         self.stoptime = datetime.datetime.now()
         timedelta = self.stoptime - self.starttime
         self.write('Finished. Processing took %s' % timedelta)
@@ -105,3 +106,6 @@ class Log:
         self.cmdargs = cmdargs
         if printargs is True:
             self.printargs()
+            
+    def emptyline(self):
+        self.write('')
