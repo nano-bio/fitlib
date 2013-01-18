@@ -28,7 +28,7 @@ filegroup.add_argument("--filelist", help="Specify a file that includes a list o
 
 #those are optional
 parser.add_argument("--alpha", "-a", help="Specify the exponent for the fit function. If not specified, it will be fitted as well", type = float)
-parser.add_argument("--sigma", "-s", help="Specify the FWHM-resolution in eV. If not specified, 1 eV will be assumed", default = 1.0, type = float)
+parser.add_argument("--sigma", "-s", help="Specify the FWHM-resolution in eV. If not specified, 1 eV will be assumed", type = float)
 parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
 parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_true')
@@ -144,6 +144,7 @@ for file in filelist:
             
             #reset other values that are read from the command line
             alpha = None
+            sigma = float64(1.0)
             linearbackground = False
 
             #loop through all given arguments
@@ -162,6 +163,8 @@ for file in filelist:
                         ea = float64(arg[1])
                     if arg[0] == 'alpha':
                         alpha = float64(arg[1])
+                    if arg[0] == 'sigma':
+                        sigma = float64(arg[1])
                     if arg[0] == 'linearbackground':
                         if arg[1] == 'True':
                             linearbackground = True
@@ -185,6 +188,10 @@ for file in filelist:
         if args.linearbackground is True:
             linearbackground = args.linearbackground
             log.write('Overwriting linear background from command line!')
+            
+        if args.sigma is not None:
+            sigma = args.sigma
+            log.write('Overwriting sigma from command line!')
 
         #depending on the situation of alpha and the lin background we need different amounts of params
         if (alpha is None) and (linearbackground is False):
@@ -211,7 +218,7 @@ for file in filelist:
             p0[1] = ea
             p0[2] = 1
             p0[3] = 1
-            
+       
         #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
         ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
 
@@ -222,7 +229,7 @@ for file in filelist:
         if p1 is not None:
             log.write('============================')
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha, min, max, linearbackground)
+            log.AE_fit_p(p1, alpha, min, max, linearbackground, sigma)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
 
@@ -232,6 +239,9 @@ for file in filelist:
         if args.nosave is False:
             #we need to create a more speaking filename
             additions = ''
+            
+            additions += '_sigma=%s' % sigma
+                        
             if alpha is not None:
                 additions += '_alpha=%s' % alpha
             

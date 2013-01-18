@@ -64,11 +64,13 @@ class Log:
         if self.nologfile is not True:
             self.fh.close()
 
-    def AE_fit_p(self, params, alpha, min, max, linearbackground):
+    def AE_fit_p(self, params, alpha, min, max, linearbackground, sigma):
         if alpha is not None:
             self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
         else:
             self.write('Alpha: %s, AE: %s' % (params[3], params[1]))
+            
+        self.write('Energy Resolution was set to %s eV FWHM' % sigma)
         
         if min is not None:
             self.write('Fit was started at %s eV.' % min)
