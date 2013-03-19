@@ -19,7 +19,7 @@ http://wiki.uibk.ac.at/pages/viewpage.action?pageId=184090733
 Requirements:
 
 * numpy >= 1.6.2
-* scipy >= 0.11.0
+* scipy >= 0.9.0
 * matplotlib >= 1.1.0
 
 Maybe older software versions work as well, but have not been tested.
