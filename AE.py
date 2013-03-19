@@ -135,16 +135,17 @@ for file in filelist:
         #default values for initial guesses
         offset = 10
         ea = 8
+        sigma = float64(1.0)
+
+        #by default we don't cut away data
+        minfit = None
+        maxfit = None
+
         
         #if there were arguments specified in the filelist, we set them here
         if len(file) > 2:
-            #by default we don't cut away data
-            min = None
-            max = None
-            
             #reset other values that are read from the command line
             alpha = None
-            sigma = float64(1.0)
             linearbackground = False
 
             #loop through all given arguments
@@ -154,9 +155,9 @@ for file in filelist:
                     #split them up
                     arg = arg.split('=', 2)
                     if arg[0] == 'min':
-                        min = arg[1]
+                        minfit = arg[1]
                     if arg[0] == 'max':
-                        max = arg[1]
+                        maxfit = arg[1]
                     if arg[0] == 'offset':
                         offset = float64(arg[1])
                     if arg[0] == 'ea':
@@ -171,8 +172,8 @@ for file in filelist:
                         elif arg[1] == 'False':
                             linearbackground = False
                         
-            #doesn't do anything if min and max are None (and they are by default)
-            data = fl.cutarray(data, lowerlim = min, upperlim = max)
+            #doesn't do anything if minfit and maxfit are None (and they are by default)
+            data = fl.cutarray(data, lowerlim = minfit, upperlim = maxfit)
             
         #if the standard guess of ea is outside the data range, we set it to the middle of the range
         datamin = float64(data[:,0].min())
@@ -229,7 +230,7 @@ for file in filelist:
         if p1 is not None:
             log.write('============================')
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha, min, max, linearbackground, sigma)
+            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, sigma)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
 
@@ -245,11 +246,11 @@ for file in filelist:
             if alpha is not None:
                 additions += '_alpha=%s' % alpha
             
-            if min is not None:
-                additions += '_min=%s' % min
+            if minfit is not None:
+                additions += '_min=%s' % minfit
                 
-            if max is not None:
-                additions += '_max=%s' % max
+            if maxfit is not None:
+                additions += '_max=%s' % maxfit
                 
             if linearbackground is True:
                 additions += '_linearbackground'
