@@ -56,7 +56,7 @@ class Log:
                 self.write('Warning! Could not create logfile! Giving all output to stdout!')
 
     def write(self, text):
-        if self.nologfile is True:
+        if self.nologfile is True and self.tovariable is False:
             print text + '\r\n'
         elif self.nologfile is  True and self.tovariable is True:
             self.logcontent = self.logcontent + text + '\r\n'
