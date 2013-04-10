@@ -14,13 +14,13 @@ class Log:
         self.starttime = datetime.datetime.now()
         
         #shall we log everything to a variable?
-        if tovariable = True:
+        if tovariable == True:
             #we obviously want to write to a variable
             self.logcontent = ''
             self.nologfile = True
             self.tovariable = True
 
-        elif tovariable = False:
+        elif tovariable == False:
             self.outputfolder = outputfolder
             
             #create a default

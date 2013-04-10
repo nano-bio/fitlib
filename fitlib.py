@@ -4,7 +4,6 @@ from scipy import *
 from scipy.special import *
 
 from scipy import optimize
-import matplotlib.pyplot as plt
 
 from operator import itemgetter
 
@@ -15,7 +14,21 @@ import helplib as hl
 
 from math import sqrt
 
-#library for plotting and fitting
+#now for the interesing part: we only load the matplotlib.pyplot if we are not called externally
+#reason for this is the problem with setting the backend after loading the module
+
+if __name__ == '__main__':
+    import sys
+    sys.exit('This program does not have a main routine is not supposed to be called from command line')
+elif __name__ == 'fitlib':
+    import matplotlib.pyplot as plt
+elif __name__ == 'fitlib.fitlib':
+    import matplotlib
+    matplotlib.use('PDF')
+
+    #now we can import matplotlib completely, because the backend is now set
+    import matplotlib.pyplot as plt
+
 
 def pbdv_fa(x,y):
     # we need this, because b is the derivative of a, which is not needed in fits and annoying when defining fit functions
