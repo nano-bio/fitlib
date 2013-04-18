@@ -86,7 +86,7 @@ class Log:
             self.write('Fit was started at %s eV.' % min)
             
         if max is not None:
-            self.write('Fit was started at %s eV.' % max)
+            self.write('Fit was ended at %s eV.' % max)
             
         if linearbackground is True:
             self.write('A linear background (non-constant) was used.')
