@@ -3,3 +3,4 @@
 output.log
 output/*
 *.pdf
+chemspider_token.txt
