@@ -26,7 +26,7 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
     #dictionary with index fragmentname
     #data-structure: [[listofpeaksvalues], [actualpeakvalues], [fit parameters]]
     #actualpeakvalues are set to 0 in the beginning
-    frag_info = {'SF6': [[0.0], [0], []], 'SF5': [[0.1], [0], []], 'F': [[5.5,9.0,11.5], [0,0,0], []], 'F2': [[4.625, 11.49], [0,0], []]}
+    frag_info = {'SF6': [[0.0], [0], []], 'SF5': [[0.1], [0], []], 'F': [[5.5, 9.0, 11.5], [0, 0, 0], []], 'F2': [[4.625, 11.49], [0,0], []]}
 
     #for plot numbering
     i = 1
@@ -40,7 +40,7 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
             log.write(file)
             #we only want the second but last part of the filename (e.g. SF6)
             filenameparts = file.split('_')
-            fragment = filenameparts[len(filenameparts) - 2]
+            fragment = filenameparts[1]
 
             log.write('Now dealing with fragment: ' + fragment)
 
