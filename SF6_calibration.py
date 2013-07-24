@@ -24,9 +24,9 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
 
     #set information for typical calibration peaks
     #dictionary with index fragmentname
-    #data-structure: [[listofpeaksvalues], [actualpeakvalues], [fit parameters]]
+    #data-structure: [[listofpeaksvalues], [actualpeakvalues], [fit parameters], [peak search offset]]
     #actualpeakvalues are set to 0 in the beginning
-    frag_info = {'SF6': [[0.0], [0], []], 'SF5': [[0.1], [0], []], 'F': [[5.5, 9.0, 11.5], [0, 0, 0], []], 'F2': [[4.625, 11.49], [0,0], []]}
+    frag_info = {'SF6': [[0.0], [0], [], [0.0]], 'SF5': [[0.1], [0], [], [0.0]], 'F': [[5.5, 9.0, 11.5], [0, 0, 0], [], [3.0]], 'F2': [[4.625, 11.49], [0,0], [], [0.0]]}
 
     #for plot numbering
     i = 1
@@ -54,7 +54,8 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
             if badfile is False:
 
                 #guess peaks
-                peaks = fl.guess_ES_peaks(data, len(frag_info[fragment][0]))
+                peaks = fl.guess_ES_peaks(data, len(frag_info[fragment][0]), offset = frag_info[fragment][3])
+                log.write('Result of peak guessing: ' + str(peaks))
                 #use guessed values to fit; return peak list to frag_info and add fit function parameters to frag_info
                 frag_info[fragment][1], frag_info[fragment][2] = fl.fitES(data, peaks)
                 n = 0

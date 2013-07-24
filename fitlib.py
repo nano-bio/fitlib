@@ -4,6 +4,7 @@ from scipy import *
 from scipy.special import *
 
 from scipy import optimize
+from scipy import signal
 
 from operator import itemgetter
 
@@ -143,40 +144,22 @@ def fitES(data, peaks):
 
     return peaksfound, p1
 
-def guess_ES_peaks(data,numberofpeaks):
-    #set some variables
-    localmax = 0
-    datalength = len(data)
-    i = 0
-    counterleft = 0
-    counterright = 0
-    nm = numberofpeaks
+def guess_ES_peaks(data, numberofpeaks, offset = None):
+    #first thing: shall we search from a certain offset?
+    if offset is not None:
+        data = cutarray(data, lowerlim = offset)
 
-    #maxima found = mf
+    #retrieve amount of entries in array
+    datalength = len(data[: ,1])
+
+    #use the CWT method implemented in the signal package of scipy
+    #minimal signal to noise ratio for peaks of 2 seems to be a good choice
+    peakindices = signal.find_peaks_cwt(data[:, 1], arange(1, datalength / 10), min_snr = 2)
+
+    #create array of all maxima found (mf)
     mf = []
-
-    #now we actually go through the data
-    for point in data:
-        i += 1
-
-        #we go here, if the new point is higher, than our highest so far
-        if point[1] > localmax:
-            #this is the new local maximum for the last (counterleft) data points
-            counterleft += 1
-            if counterleft > (datalength/25):
-                #ok, this has been the highest point for the last 5% of the file
-                localmax = point[1]
-                localmaxx = point[0]
-                counterright = 0
-        elif point[1] < localmax:
-            #we are descending again
-            counterright += 1
-        if counterright > (datalength/25):
-            #ok this was a maximum for 5% of the file in each direction
-            mf.append([localmaxx, localmax])
-            localmax = 0
-            counterleft = 0
-            counterright = 0
+    for peakindex in peakindices:
+        mf.append([data[peakindex, 0], data[peakindex, 1]])
 
     #sort them by their size
     mf.sort(key=itemgetter(1))
@@ -186,7 +169,7 @@ def guess_ES_peaks(data,numberofpeaks):
     i = 0
 
     #return the (numberofpeaks) highest peaks
-    while i < nm:
+    while i < numberofpeaks:
         i += 1
         mf_final.append(mf.pop())
     
