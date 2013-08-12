@@ -144,10 +144,10 @@ def fitES(data, peaks):
 
     return peaksfound, p1
 
-def guess_ES_peaks(data, numberofpeaks, offset = None):
+def guess_ES_peaks(data, numberofpeaks, offset = None, limit = None):
     #first thing: shall we search from a certain offset?
     if offset is not None:
-        data = cutarray(data, lowerlim = offset)
+        data = cutarray(data, lowerlim = offset, upperlim = limit)
 
     #retrieve amount of entries in array
     datalength = len(data[: ,1])
