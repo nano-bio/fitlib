@@ -79,39 +79,6 @@ def gaussfunctions(numpeaks):
 
     return fitfunc
 
-def readfile(filename):
-
-    #create empty list
-    a = []
-    try:
-        f = hl.openfile(filename)
-    except IOError:
-        raise IOError
-        
-    #we need to check if a line is actually useful
-    num_tab_num = re.compile('^[0-9]+((\.){1}[0-9]+)?\\t[0-9]+((\.){1}[0-9]+)?.*[\\r]?\\n$')
-
-    #read file, skip comment lines
-    for line in f:
-        #no comments
-        if not line.startswith('#'):
-            #only number tabulator number
-            if num_tab_num.match(line):
-                #strip newline and split by tabulator and append to array
-                a.append(line.strip('\r\n').split('\t'))
-
-    #convert list a to float array
-    data = array(a,dtype = float)
-
-    if len(data) == 0:
-        raise IOError('File did not contain any valid lines')
-
-    #close file
-    f.close()
-
-    return data
-    
-
 def fitES(data, peaks):
 
     #we need a place to put our newly found peaks

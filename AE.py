@@ -120,7 +120,7 @@ for file in filelist:
     usefulfile = True
 
     try:
-        data = fl.readfile(file[0])
+        data = hl.readfile(file[0])
     except IOError:
         usefulfile = False
         log.ioerror(file[0])

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import loglib
+import helplib as hl
 
 import os
 import re
@@ -46,7 +47,7 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
 
             #read the file
             try:
-                data = fl.readfile(file)
+                data = hl.readfile(file)
             except IOError:
                 badfile = True
                 log.write('Could not read the file: ' + file)
