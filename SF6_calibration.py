@@ -26,7 +26,7 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
     #dictionary with index fragmentname
     #data-structure: [[listofpeaksvalues], [actualpeakvalues], [fit parameters], [peak search offset], [peak search end]]
     #actualpeakvalues are set to 0 in the beginning
-    frag_info = {'SF6': [[0.0], [0], [], None, [7.0]], 'SF5': [[0.1], [0], [], None, [7.0]], 'F': [[5.5, 9.0, 11.5], [0, 0, 0], [], [3.0], [16.0]], 'F2': [[4.625, 11.49], [0,0], [], None, [15.0]]}
+    frag_info = {'SF6': [[0.0], [0], [], None, [7.0]], 'SF5': [[0.1], [0], [], None, [7.0]], 'F': [[5.5, 9.0, 11.5], [0, 0, 0], [], [5.0], [16.0]], 'F2': [[4.625, 11.49], [0,0], [], None, [15.0]]}
 
     #for plot numbering
     i = 1

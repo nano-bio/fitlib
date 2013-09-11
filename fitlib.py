@@ -154,7 +154,7 @@ def guess_ES_peaks(data, numberofpeaks, offset = None, limit = None):
 
     #use the CWT method implemented in the signal package of scipy
     #minimal signal to noise ratio for peaks of 2 seems to be a good choice
-    peakindices = signal.find_peaks_cwt(data[:, 1], arange(1, datalength / 10), min_snr = 2)
+    peakindices = signal.find_peaks_cwt(data[:, 1], arange(1, datalength / 6), min_snr = 2.5, noise_perc = 25)
 
     #create array of all maxima found (mf)
     mf = []
