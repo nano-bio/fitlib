@@ -8,10 +8,15 @@ import datetime
 
 class Log:
     """This class provides logging functions"""
-    def __init__(self, filename = None, outputfolder = 'output', tovariable = False):
+    def __init__(self, filename = None, outputfolder = 'output', tovariable = False, timestamp = False):
     
         #make a timestamp
         self.starttime = datetime.datetime.now()
+        
+        if timestamp == True:
+            self.timestamp = True
+        else:
+            self.timestamp = False
         
         #shall we log everything to a variable?
         if tovariable == True:
@@ -30,7 +35,7 @@ class Log:
             #let's assume we can create a logfile
             self.nologfile = False
 
-	    #adjust file path in case we're running on fucking windows
+            #adjust file path in case we're running on fucking windows
             self.filename = os.path.normcase(filename)
                 
             #make an absolute path for fucking windows
@@ -38,7 +43,7 @@ class Log:
         
             #see if the given or standard logfile can be opened
             try:
-                self.fh = open(self.filename, 'w')
+                self.fh = open(self.filename, 'w', buffering = 0)
             except IOError:
                 #maybe it is supposed to be in a subdirectory and we have to the create said directory
                 directory = os.path.dirname(self.filename)
@@ -46,7 +51,7 @@ class Log:
                     os.makedirs(directory)
 
                 try:
-                    self.fh = open(self.filename, 'w')
+                    self.fh = open(self.filename, 'w', buffering = 0)
                 except:
                     self.nologfile = True
 
@@ -56,12 +61,18 @@ class Log:
                 self.write('Warning! Could not create logfile! Giving all output to stdout!')
 
     def write(self, text):
-        if self.nologfile is True and self.tovariable is False:
-            print text + '\r\n'
-        elif self.nologfile is  True and self.tovariable is True:
-            self.logcontent = self.logcontent + text + '\r\n'
+        #we might require a timestamp
+        if self.timestamp == True:
+            now = str(datetime.datetime.now()) + ': '
         else:
-            self.fh.write(text + '\r\n')
+            now = ''
+            
+        if self.nologfile is True and self.tovariable is False:
+            print now + text + '\r\n'
+        elif self.nologfile is  True and self.tovariable is True:
+            self.logcontent = self.logcontent + now + text + '\r\n'
+        else:
+            self.fh.write(now + text + '\r\n')
 
     def ioerror(self, filename):
         self.write('File %s could not be read.' % filename)
