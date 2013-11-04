@@ -39,11 +39,6 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
         if fn_pattern.search(file):
             badfile = False
             log.write(file)
-            #we only want the second but last part of the filename (e.g. SF6)
-            filenameparts = file.split('_')
-            fragment = filenameparts[1]
-
-            log.write('Now dealing with fragment: ' + fragment)
 
             #read the file
             try:
@@ -52,7 +47,18 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
                 badfile = True
                 log.write('Could not read the file: ' + file)
 
+            #get rid of path (basename), then split by underscores.
+            #we only want the second part of the filename (e.g. SF6) -> [1]
+            fragment = os.path.basename(file).split('_')[1]
+
+            # is that a proper fragment?
+            if fragment not in frag_info:
+                badfile = True
+                log.write('Unknown fragment: ' + fragment)
+
+            #fit the file if we can read it and if we know the fragment
             if badfile is False:
+                log.write('Now dealing with fragment: ' + fragment)
 
                 #guess peaks
                 peaks = fl.guess_ES_peaks(data, len(frag_info[fragment][0]), offset = frag_info[fragment][3], limit = frag_info[fragment][4])
