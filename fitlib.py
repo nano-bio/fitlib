@@ -61,21 +61,17 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
 
 def gaussfunctions(numpeaks):
     #this function defines gauss-shapes for (numpeaks) peaks
-    if numpeaks == 1:
-        # fit function for one peak
-        fitfunc = lambda p, x: p[0]*exp(-(p[1]-x)**2/p[2])
-    elif numpeaks == 2:
-        # fit function for two peaks
-        fitfunc = lambda p, x: p[0]*exp(-(p[1]-x)**2/p[2]) + p[3]*exp(-(p[4]-x)**2/p[5])
-    elif numpeaks == 3:
-        # fit function for three peaks
-        fitfunc = lambda p, x: p[0]*exp(-(p[1]-x)**2/p[2]) + p[3]*exp(-(p[4]-x)**2/p[5]) + p[6]*exp(-(p[7]-x)**2/p[8])
-    elif numpeaks == 4:
-        # fit function for four peaks
-        fitfunc = lambda p, x: p[0]*exp(-(p[1]-x)**2/p[2]) + p[3]*exp(-(p[4]-x)**2/p[5]) + p[6]*exp(-(p[7]-x)**2/p[8]) + p[9]*exp(-(p[10]-x)**2/p[11])
-    elif numpeaks == 5:
-        # fit function for five peaks
-        fitfunc = lambda p, x: p[0]*exp(-(p[1]-x)**2/p[2]) + p[3]*exp(-(p[4]-x)**2/p[5]) + p[6]*exp(-(p[7]-x)**2/p[8]) + p[9]*exp(-(p[10]-x)**2/p[11]) + p[12]*exp(-(p[13]-x)**2/p[14])
+    expr_list = []
+
+    # 9 gaussians is ought to be enough for anybody.
+    if numpeaks < 10:
+        for n in range(0, numpeaks):
+            expr_list.append('p[%s]*exp(-(p[%s]-x)**2/p[%s])' % (n*3, n*3+1, n*3+2))
+
+    complete_expr = ' + '.join(expr_list)
+
+    #now define one single lambda
+    fitfunc = lambda p, x: eval(complete_expr)
 
     return fitfunc
 
