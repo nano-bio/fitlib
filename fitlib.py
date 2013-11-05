@@ -63,7 +63,7 @@ def gaussfunctions(numpeaks):
     #this function defines gauss-shapes for (numpeaks) peaks
     expr_list = []
 
-    # 9 gaussians is ought to be enough for anybody.
+    # 9 gaussians ought to be enough for anybody.
     if numpeaks < 10:
         for n in range(0, numpeaks):
             expr_list.append('p[%s]*exp(-(p[%s]-x)**2/p[%s])' % (n*3, n*3+1, n*3+2))
@@ -148,13 +148,24 @@ def plotES(data, title):
     plt.ylabel('Counts (1/s)')
     plt.grid(True)
     plt.title(title)
+    
+def data_from_fit_and_parameters(data, fitfunc, parameters):
+    #create empy float array in the size of data (but only 2 columns)
+    a = empty((len(data[:, 0]),2), dtype = float)
+    
+    #create equidistant x points
+    a[:, 0] = linspace(data[:, 0].min(), data[:, 0].max(), len(data[:, 0]))
+    #calculate corresponding y values
+    a[:, 1] = fitfunc(parameters, data[:, 0])
+    
+    return a
 
 def plot_fit(data, fitfunc, parameters):
-    #create equidistant x points for plotting the fit
-    fitx = linspace(data[:,0].min(), data[:,0].max(), len(data[:,0]))
+    #use above function create equidistant x points for plotting the fit
+    data = data_from_fit_and_parameters(data, fitfunc, parameters)
 
     #plot
-    plt.plot(fitx, fitfunc(parameters, fitx), 'r--', linewidth=3)
+    plt.plot(data[:, 0],data[:, 1], 'r--', linewidth=3)
 
 def fit_function_to_data(data, fitfunc, initial_parameters):
     #data has to be a numpy array
