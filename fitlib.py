@@ -67,6 +67,8 @@ def gaussfunctions(numpeaks):
     if numpeaks < 10:
         for n in range(0, numpeaks):
             expr_list.append('p[%s]*exp(-(p[%s]-x)**2/p[%s])' % (n*3, n*3+1, n*3+2))
+    else:
+        raise ValueError('Maximum of 9 Gaussians are allowed.')
 
     complete_expr = ' + '.join(expr_list)
 
@@ -130,11 +132,18 @@ def guess_ES_peaks(data, numberofpeaks, offset = None, limit = None):
     #empty array to return
     mf_final = []
     i = 0
+    
+    peaksfound = len(mf)
 
     #return the (numberofpeaks) highest peaks
     while i < numberofpeaks:
+        #do we even have that many peaks?
+        if i < peaksfound:
+            mf_final.append(mf.pop())
+        #we don't. return zeros.
+        else:
+            mf_final.append([0.0, 0.0])
         i += 1
-        mf_final.append(mf.pop())
     
     #sort them by energy
     mf_final.sort(key=itemgetter(0))
