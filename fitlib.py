@@ -159,13 +159,19 @@ def plotES(data, title):
     plt.title(title)
     
 def data_from_fit_and_parameters(data, fitfunc, parameters):
-    #create empy float array in the size of data (but only 2 columns)
-    a = empty((len(data[:, 0]),2), dtype = float)
+    minimumpoints = 20
+
+    #check, whether there is a reasonable amount of points to plot:
+    if len(data[:, 0]) > minimumpoints:
+        #create empy float array in the size of data
+        a = empty_like(data, dtype = float)
+    else:
+        a = empty((minimumpoints, 2), dtype = float)
     
     #create equidistant x points
-    a[:, 0] = linspace(data[:, 0].min(), data[:, 0].max(), len(data[:, 0]))
+    a[:, 0] = linspace(data[:, 0].min(), data[:, 0].max(), len(a[:, 0]))
     #calculate corresponding y values
-    a[:, 1] = fitfunc(parameters, data[:, 0])
+    a[:, 1] = fitfunc(parameters, a[:, 0])
     
     return a
 
