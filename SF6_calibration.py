@@ -64,7 +64,10 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
                 peaks = fl.guess_ES_peaks(data, len(frag_info[fragment][0]), offset = frag_info[fragment][3], limit = frag_info[fragment][4])
                 log.write('Result of peak guessing: ' + str(peaks))
                 #use guessed values to fit; return peak list to frag_info and add fit function parameters to frag_info
-                frag_info[fragment][1], frag_info[fragment][2] = fl.fitES(data, peaks)
+                if fragment is 'F':
+                    frag_info[fragment][1], frag_info[fragment][2] = fl.fitES(data, peaks, True)
+                else:
+                    frag_info[fragment][1], frag_info[fragment][2] = fl.fitES(data, peaks)
                 n = 0
                 for peakpos in frag_info[fragment][1]:
                     fitdata.append([peakpos, frag_info[fragment][0][n]])
@@ -74,8 +77,11 @@ def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile 
                 if type(frag_info[fragment][2]) is not list:
                     plt.subplot(3,2,i)
                     fl.plotES(data, fragment)
-                    # the /3 stems from the fact that the functions takes the number of peaks, not parameters
-                    fl.plot_fit(data, fl.gaussfunctions(len(frag_info[fragment][2])/3), frag_info[fragment][2])
+                    # the /3 stems from the fact that the function takes the number of peaks, not parameters
+                    if fragment is 'F':
+                        fl.plot_fit(data, fl.gaussfunctions(3, True), frag_info[fragment][2])
+                    else:
+                        fl.plot_fit(data, fl.gaussfunctions(len(frag_info[fragment][2])/3), frag_info[fragment][2])
                     i = i + 1
 
     #now we fitted all the calibration scans and have an array with peaks in frag_info

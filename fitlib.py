@@ -59,16 +59,20 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
 
     return fitfunc
 
-def gaussfunctions(numpeaks):
+def gaussfunctions(numpeaks, linear_addition = False):
     #this function defines gauss-shapes for (numpeaks) peaks
     expr_list = []
 
     # 9 gaussians ought to be enough for anybody.
     if numpeaks < 10:
         for n in range(0, numpeaks):
-            expr_list.append('p[%s]*exp(-(p[%s]-x)**2/p[%s])' % (n*3, n*3+1, n*3+2))
+            expr_list.append('p[%s]*exp(-(p[%s]-x)**2/p[%s])' % (n*3, n*3 + 1, n*3 + 2))
     else:
         raise ValueError('Maximum of 9 Gaussians are allowed.')
+        
+    # in some cases, one needs a linear addition (ion pair formation)
+    if linear_addition is True:
+        expr_list.append('p[%s]*x' % (numpeaks*3))
 
     complete_expr = ' + '.join(expr_list)
 
@@ -77,7 +81,7 @@ def gaussfunctions(numpeaks):
 
     return fitfunc
 
-def fitES(data, peaks):
+def fitES(data, peaks, linear_addition = False):
 
     #we need a place to put our newly found peaks
     peaksfound = peaks
@@ -94,8 +98,13 @@ def fitES(data, peaks):
 
         i += 1
 
+    # in case we want a linear addition (+ p[n]*x)
+    # we just guess 1 as the slope
+    if linear_addition is True:
+        p0.append(1)
+
     #define fitfunction with n peaks
-    fitfunc = gaussfunctions(len(peaks))
+    fitfunc = gaussfunctions(len(peaks), linear_addition)
 
     #fit
     p1 = fit_function_to_data(data, fitfunc, p0)
@@ -118,23 +127,65 @@ def guess_ES_peaks(data, numberofpeaks, offset = None, limit = None):
     datalength = len(data[: ,1])
 
     #use the CWT method implemented in the signal package of scipy
-    #minimal signal to noise ratio for peaks of 2 seems to be a good choice
-    peakindices = signal.find_peaks_cwt(data[:, 1], arange(1, datalength / 6), min_snr = 2.5, noise_perc = 25)
+    #minimal signal to noise ratio for peaks of 2.5 seems to be a good choice
+    cwt_peakindices = signal.find_peaks_cwt(data[:, 1], arange(1, datalength / 6), min_snr = 2.5, noise_perc = 25)
 
-    #create array of all maxima found (mf)
-    mf = []
-    for peakindex in peakindices:
-        mf.append([data[peakindex, 0], data[peakindex, 1]])
+    #create array of all maxima found with the CWT method
+    cwt_maxima = []
+    for peakindex in cwt_peakindices:
+        cwt_maxima.append([data[peakindex, 0], data[peakindex, 1]])
 
-    #sort them by their size
+    #sort them by their size (signal)
+    cwt_maxima.sort(key=itemgetter(1))
+    
+    peaksfound = len(cwt_maxima)
+    
+    #have we found the requested number of maxima with the CWT method?
+    if peaksfound < numberofpeaks:
+        #we haven't found enough. as a backup we use a simple algorithm:
+        #search for maxima that dominate the neighbouring 15th of the area
+        rel_peakindices = signal.argrelmax(data, order = len(data)/15)
+        
+        rel_maxima = []
+        last = 0
+        #now we pick the first of a group that spans a 13th of the whole range
+        for peakindex in rel_peakindices[0]:
+            if (data[peakindex, 0] - last) > data[:, 0].max()/13:
+                last = data[peakindex, 0]
+                rel_maxima.append([data[peakindex, 0], data[peakindex, 1]])
+        
+        #sort them by their size
+        rel_maxima.sort(key=itemgetter(1))
+        
+        #combine the two arrays (rel_maxima, cwt_maxima) to mf giving cwt the preference
+        mf = []
+        # we go through cwt_maxima and remove all rel_maxima from their list,
+        # if they are within one 1 eV
+        for cwt_maximum in cwt_maxima:
+            for rel_maximum in rel_maxima:
+                if abs(rel_maximum[0] - cwt_maximum[0]) < 1:
+                    rel_maxima.remove(rel_maximum)
+            mf.append(cwt_maximum)
+        
+        #now we fill up with the largest rel_maxima
+        while len(mf) < numberofpeaks:
+            #only works if rel_maxima search was successful.
+            try:
+                mf.append(rel_maxima.pop())
+            except:
+                break
+    else:
+        #we didn't use the simple algorithm. all maxima found by CWT
+        mf = cwt_maxima
+    
+    #sort again and define amount of found peaks again
     mf.sort(key=itemgetter(1))
+    peaksfound = len(mf)
 
     #empty array to return
     mf_final = []
     i = 0
     
-    peaksfound = len(mf)
-
     #return the (numberofpeaks) highest peaks
     while i < numberofpeaks:
         #do we even have that many peaks?
