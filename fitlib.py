@@ -14,6 +14,7 @@ import os
 import helplib as hl
 
 from math import sqrt
+from math import log
 
 #now for the interesing part: we only load the matplotlib.pyplot if we are not called externally
 #reason for this is the problem with setting the backend after loading the module
@@ -41,7 +42,7 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
     #they are of the form b + (x-AE)^a convoluted with a gaussian
     #see file docs/AE_conv.pdf for details
     
-    sigma = sigma / 2.35482
+    sigma = sigma / 2*sqrt(2*log(2))
     
     #0 = offset, 1 is EA, 2 is a factor, 3 is alpha or the linear bg, 4 is the linear background
     
@@ -56,6 +57,48 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
             fitfunc = lambda p, x: p[0] + p[3]*x + p[2]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(alpha+1), (p[1]-x)/sigma)
         else:
             fitfunc = lambda p, x: p[0] + p[4]*x + p[2]*sigma**p[3]*gamma(p[3]+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(p[3]+1), (p[1]-x)/sigma)   
+
+    return fitfunc
+    
+def get_multiple_AE_func(sigma, numonsets, alpha = None):
+    #this function defines AE-functions for (numonsets) onsets.
+    #see function above
+    expr_list = []
+    
+    sigma = sigma / 2*sqrt(2*log(2))
+    
+    '''
+    the fittable parameters for the functions are as follows:
+    alpha fixed:
+    p[0] ... offset or slope (first function) for linear addition (all others)
+    p[1] ... AE
+    p[2] ... constant (see docs)
+    
+    alpha fitted:
+    as above, but with
+    p[3] ... alpha
+    '''
+
+    # 10 gaussians ought to be enough for anybody.
+    if numonsets < 10:
+        for n in range(0, numonsets):
+            if alpha is not None:
+                if n == 0:
+                    expr_list.append('p[%s] + p[%s]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[%s]-x)**2)*pbdv_fa(-(alpha+1), (p[%s]-x)/sigma)' % (n*3, n*3 + 2, n*3 + 1, n*3 + 1))
+                else:
+                    expr_list.append('p[%s]*x + p[%s]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[%s]-x)**2)*pbdv_fa(-(alpha+1), (p[%s]-x)/sigma)' % (n*3, n*3 + 2, n*3 + 1, n*3 + 1))
+            else:
+                if n == 0:
+                    expr_list.append('p[%s] + p[%s]*sigma**p[%s]*gamma(p[%s]+1)*exp(-1.0/(4.0*sigma**2)*(p[%s]-x)**2)*pbdv_fa(-(p[%s]+1), (p[%s]-x)/sigma)' % (n*4, n*4 + 2, n*4 + 3, n*4 + 3, n*4 + 1, n*4 + 3, n*4 + 1))
+                else:
+                    expr_list.append('p[%s]*x + p[%s]*sigma**p[%s]*gamma(p[%s]+1)*exp(-1.0/(4.0*sigma**2)*(p[1%sx)**2)*pbdv_fa(-(p[%s]+1), (p[%s]-x)/sigma)' % (n*4, n*4 + 2, n*4 + 3, n*4 + 3, n*4 + 1, n*4 + 3, n*4 + 1))
+    else:
+        raise ValueError('Maximum of 10 Onsets are allowed.')
+
+    complete_expr = ' + '.join(expr_list)
+
+    #now define one single lambda
+    fitfunc = lambda p, x: eval(complete_expr)
 
     return fitfunc
 
