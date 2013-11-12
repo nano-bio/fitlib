@@ -60,14 +60,17 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
 
     return fitfunc
     
-def get_multiple_AE_func(sigma, numonsets, alpha = None):
+def get_multiple_AE_func(numonsets, alpha = None):
     #this function defines AE-functions for (numonsets) onsets.
     #see function above
     expr_list = []
     
-    sigma = sigma / 2*sqrt(2*log(2))
-    
     '''
+    This is slightly different than above. We have to evaluate
+    the complete expression outside of this function in the main
+    program, because we need p, sigma and alpha.
+    Therefore this function just returns the string.
+    
     the fittable parameters for the functions are as follows:
     alpha fixed:
     p[0] ... offset or slope (first function) for linear addition (all others)
@@ -97,10 +100,7 @@ def get_multiple_AE_func(sigma, numonsets, alpha = None):
 
     complete_expr = ' + '.join(expr_list)
 
-    #now define one single lambda
-    fitfunc = lambda p, x: eval(complete_expr)
-
-    return fitfunc
+    return complete_expr
 
 def gaussfunctions(numpeaks, linear_addition = False):
     #this function defines gauss-shapes for (numpeaks) peaks
