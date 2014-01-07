@@ -254,14 +254,7 @@ for file in filelist:
             
         # we offer an option to write an array of x- and y-values to a file
         if args.writefit is True:
-            fitx = linspace(data[:,0].min(), data[:,0].max(), len(data[:,0]))
-            fity = ae_func(p1, fitx)
-            
-            fitdata = []
-            for i in range(0, len(fitx)):
-                fitdata.append([fitx[i], fity[i]])
-                
-            fitdata = array(fitdata, dtype = float)
+            fitdata = fl.data_from_fit_and_parameters(data, ae_func, p1)
             
             arrayfilename = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '_fitarray.txt'))
             hl.writearray(fitdata, arrayfilename)
