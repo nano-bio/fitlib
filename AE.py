@@ -32,6 +32,7 @@ parser.add_argument("--sigma", "-s", help="Specify the FWHM-resolution in eV. If
 parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
 parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_true')
+parser.add_argument("--writefit", help="Write a file with an array that contains the x- and y-values of the fit.", action = 'store_true')
 parser.add_argument("--outputfolder", help="This option can be used to output files to a specific directory.")
 parser.add_argument('--version', action='version', version='r1')
 
@@ -233,28 +234,45 @@ for file in filelist:
             log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, sigma)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
+            
+        #we need to create a more speaking filename
+        additions = ''
+        
+        additions += '_sigma=%s' % sigma
+                    
+        if alpha is not None:
+            additions += '_alpha=%s' % alpha
+        
+        if minfit is not None:
+            additions += '_min=%s' % minfit
+            
+        if maxfit is not None:
+            additions += '_max=%s' % maxfit
+            
+        if linearbackground is True:
+            additions += '_linearbackground'
+            
+        # we offer an option to write an array of x- and y-values to a file
+        if args.writefit is True:
+            fitx = linspace(data[:,0].min(), data[:,0].max(), len(data[:,0]))
+            fity = ae_func(p1, fitx)
+            
+            fitdata = []
+            for i in range(0, len(fitx)):
+                fitdata.append([fitx[i], fity[i]])
+                
+            fitdata = array(fitdata, dtype = float)
+            
+            arrayfilename = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '_fitarray.txt'))
+            hl.writearray(fitdata, arrayfilename)
+            
+            log.write('Wrote array to %s' % arrayfilename)
 
         #we don't even need to plot if we neither save nor show
         if (args.noshow is False) or (args.nosave is False):
             fl.plot_fit(data, ae_func, p1)
+            
         if args.nosave is False:
-            #we need to create a more speaking filename
-            additions = ''
-            
-            additions += '_sigma=%s' % sigma
-                        
-            if alpha is not None:
-                additions += '_alpha=%s' % alpha
-            
-            if minfit is not None:
-                additions += '_min=%s' % minfit
-                
-            if maxfit is not None:
-                additions += '_max=%s' % maxfit
-                
-            if linearbackground is True:
-                additions += '_linearbackground'
-                
             plotfile = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf'))
             plt.savefig(plotfile, format='pdf')
             log.write('Plotted to file: %s' % plotfile)
