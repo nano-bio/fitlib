@@ -90,6 +90,8 @@ class Log:
             self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
         else:
             self.write('Alpha: %s, AE: %s' % (params[3], params[1]))
+
+        self.write('Offset: %s, Slope: %s' % (params[0], params[2]))
             
         self.write('Energy Resolution was set to %s eV FWHM' % sigma)
         
