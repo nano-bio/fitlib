@@ -26,7 +26,7 @@ def openfile(filename, rw = 'r'):
             #ok this thing cannot be read
             raise IOError('Could not read file')
 
-def readfile(filename):
+def readfile(filename, tolerate_spaces = False):
 
     #create empty list
     a = []
@@ -36,7 +36,10 @@ def readfile(filename):
         raise IOError
 
     #we need to check if a line is actually useful
-    num_tab_num = re.compile('^[0-9]+((\.){1}[0-9]+)?\\t[0-9]+((\.){1}[0-9]+)?.*[\\r]?\\n$')
+    if tolerate_spaces is True:
+        num_tab_num = re.compile('^\s{0,4}-?[0-9]+((\.){1}[0-9]+)?\s{0,4}\\t\s{0,4}[0-9]+((\.){1}[0-9]+)?.*[\\r]?\\n$')
+    else:	
+        num_tab_num = re.compile('^-?[0-9]+((\.){1}[0-9]+)?\\t[0-9]+((\.){1}[0-9]+)?.*[\\r]?\\n$')
 
     #read file, skip comment lines
     for line in f:
