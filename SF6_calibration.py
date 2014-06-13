@@ -8,6 +8,61 @@ import re
 from numpy import *
 from scipy import *
 
+def do_CCl4_calibration(filename, showplots = True, outputfile = 'CCl4_cal.pdf'):
+    #this is tricky. we don't need to set the backed to PDF here before importing, because fitlib does that
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import fitlib as fl
+
+    #instanciate a log object
+    log = loglib.Log(tovariable = True)
+
+    log.write(filename)
+
+    # we assume the file is OK
+    badfile = False
+
+    # read the file
+    try:
+        data = hl.readfile(filename, tolerate_spaces = True)
+    except IOError:
+        badfile = True
+        log.write('Could not read the file: ' + filename)
+
+    parameters = []
+
+    if badfile is not True:
+        # guess peaks
+        peaks = fl.guess_ES_peaks(data, 1, offset = None, limit = 1)
+        log.write('Result of peak guessing: ' + str(peaks))
+
+        # introduce a second peak, usually 0.8 eV higher.
+        secondpeak = []
+        secondpeak.append(peaks[0][0] + 0.8)
+        secondpeak.append(peaks[0][1] / 35)
+
+        peaks.append(secondpeak)
+
+        log.write('With additional peak: ' + str(peaks))
+
+        # fit it
+        peaksfound, p = fl.fitES(data, peaks, linear_addition = False)
+        log.write('Result of peak fitting: ' + str(peaksfound))
+
+        # plot to get a nice file
+        fl.plotES(data, 'CCl4')
+        fl.plot_fit(data, fl.gaussfunctions(2, False), p)
+
+        log.emptyline()
+
+        if showplots is True:
+            plt.show()
+
+        plt.savefig(outputfile)
+
+    return p[1], log.logcontent
+
+
 def do_SF6_calibration(filelist, showplots = True, quadratic = True, outputfile = 'SF6_cal.pdf'):
     #this is tricky. we don't need to set the backed to PDF here before importing, because fitlib does that
     import matplotlib
