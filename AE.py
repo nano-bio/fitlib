@@ -32,6 +32,7 @@ parser.add_argument("--sigma", "-s", help="Specify the FWHM-resolution in eV. If
 parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
 parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_true')
+parser.add_argument("--writetoplot", "-w", help="Write AE to plot and mark it.", action = 'store_true')
 parser.add_argument("--writefit", help="Write a file with an array that contains the x- and y-values of the fit.", action = 'store_true')
 parser.add_argument("--outputfolder", help="This option can be used to output files to a specific directory.")
 parser.add_argument('--version', action='version', version='r1')
@@ -127,12 +128,6 @@ for file in filelist:
         log.ioerror(file[0])
 
     if usefulfile is True:
-
-        #in case we don't want any graphical output whatsoever, we skip this, in order to avoid errors from plt
-        if (args.noshow is False) or (args.nosave is False):
-            fig1 = plt.figure()
-            fl.plotES(data, file[1])
-        
         #default values for initial guesses
         offset = 10
         ea = 8
@@ -263,7 +258,23 @@ for file in filelist:
 
         #we don't even need to plot if we neither save nor show
         if (args.noshow is False) or (args.nosave is False):
+            fig1 = plt.figure()
+            ae_x = p1[1]
+            fl.plotES(data, file[1] + ' / AE = %.2f' % ae_x)
             fl.plot_fit(data, ae_func, p1)
+
+            #we annotate the AE in the plot
+            if args.writetoplot is True:
+                # which alpha?
+                if alpha is not None:
+                    alpha_value = alpha
+                else:
+                    alpha_value = p1[3]
+
+                annotate_string = 'AE = %.2f\n$\\alpha$ = %.3f' %(ae_x, alpha_value)
+                fig1.text(0.15, 0.85, annotate_string,
+                        verticalalignment='top', horizontalalignment='left',
+                        color='green', fontsize=15)
             
         if args.nosave is False:
             plotfile = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf'))
