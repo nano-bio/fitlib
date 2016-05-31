@@ -37,6 +37,30 @@ def pbdv_fa(x,y):
     a, b = pbdv(x, y)
     return a
 
+
+def AE_func(alpha = None, offsetfixed = None, linearbackground = False):
+    #this function defines fit functions for appearance energies
+    #they are of the form b + (x-AE)^a convoluted with a gaussian
+    #see file docs/AE_conv.pdf for details
+
+    #0 = offset, 1 is EA, 2 is a factor, 3 is alpha, 4 is the linear background
+
+    base_func = 'lambda p, x: p[2]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*fl.pbdv_fa(-(alpha+1), (p[1]-x)/sigma)'
+
+    if alpha is None:
+        base_func = base_func.replace('alpha', 'p[3]')
+    
+    if offsetfixed is None:
+        base_func = base_func + ' + p[0]'
+    else:
+        base_func = base_func + ' + %s' % (offsetfixed)
+
+    if linearbackground is True:
+        base_func = base_func + ' + p[4]*x'
+
+    return base_func
+
+# DEPRECATED!
 def get_AE_func(sigma, alpha = None, linearbackground = False):
     #this function defines fit functions for appearance energies
     #they are of the form b + (x-AE)^a convoluted with a gaussian
@@ -59,7 +83,7 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
             fitfunc = lambda p, x: p[0] + p[4]*x + p[2]*sigma**p[3]*gamma(p[3]+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(p[3]+1), (p[1]-x)/sigma)   
 
     return fitfunc
-    
+
 def get_multiple_AE_func(numonsets, alpha = None):
     #this function defines AE-functions for (numonsets) onsets.
     #see function above

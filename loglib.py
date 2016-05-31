@@ -84,25 +84,6 @@ class Log:
         self.write('Finished. Processing took %s' % timedelta)
         if self.nologfile is not True:
             self.fh.close()
-
-    def AE_fit_p(self, params, alpha, min, max, linearbackground, sigma):
-        if alpha is not None:
-            self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
-        else:
-            self.write('Alpha: %s, AE: %s' % (params[3], params[1]))
-
-        self.write('Offset: %s, Slope: %s' % (params[0], params[2]))
-            
-        self.write('Energy Resolution was set to %s eV FWHM' % sigma)
-        
-        if min is not None:
-            self.write('Fit was started at %s eV.' % min)
-            
-        if max is not None:
-            self.write('Fit was ended at %s eV.' % max)
-            
-        if linearbackground is True:
-            self.write('A linear background (non-constant) was used.')
             
     def printargs(self):
         if self.cmdargs.filename is not None:

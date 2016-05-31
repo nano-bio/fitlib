@@ -3,6 +3,8 @@
 from numpy import *
 from scipy import *
 
+import numpy as np
+
 from scipy.special import *
 from scipy import optimize
 
@@ -52,8 +54,32 @@ if args.outputfolder is not None:
     if not os.path.exists(outputfolder):
         os.makedirs(outputfolder)
     
-#instanciate a log object (now that we know where)
-log = loglib.Log(outputfolder = outputfolder)
+# derive the log class from the loglib and add a function to write AE parameters
+class AELog(loglib.Log):
+    def AE_fit_p(self, params, alpha, min, max, linearbackground, sigma, offsetfixed):
+        if alpha is not None:
+            self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
+        else:
+            self.write('Alpha: %s, AE: %s' % (params[3], params[1]))
+
+        if offsetfixed is not None:
+            self.write('Offset fixed at: %s, Slope: %s' % (offsetfixed, params[4]))
+        else:
+            self.write('Offset: %s, Slope: %s' % (params[0], params[4]))
+            
+        self.write('Energy Resolution was set to %s eV FWHM' % sigma)
+        
+        if min is not None:
+            self.write('Fit was started at %s eV.' % min)
+            
+        if max is not None:
+            self.write('Fit was ended at %s eV.' % max)
+            
+        if linearbackground is True:
+            self.write('A linear background (non-constant) was used.')
+
+
+log = AELog(outputfolder = outputfolder)
 
 #set arguments in the log object
 log.setargs(args)
@@ -137,7 +163,13 @@ for file in filelist:
         minfit = None
         maxfit = None
 
-        
+        #by default we don't have the offset fixed
+        offsetfixed = None
+
+        #we want to plot the complete data (and not a subset), so we copy it here
+        #in case it gets cut later
+        complete_data = data
+
         #if there were arguments specified in the filelist, we set them here
         if len(file) > 2:
             #reset other values that are read from the command line
@@ -146,16 +178,22 @@ for file in filelist:
 
             #loop through all given arguments
             for arg in file:
+                # remove brackets
+                arg = arg.replace('[', '').replace(']', '')
                 #are they matching "arg=value" where value is a float or int
                 if argre.match(arg):
                     #split them up
                     arg = arg.split('=', 2)
+                    print arg[0]
+                    print arg[1]
                     if arg[0] == 'min':
                         minfit = arg[1]
                     if arg[0] == 'max':
                         maxfit = arg[1]
                     if arg[0] == 'offset':
                         offset = float64(arg[1])
+                    if arg[0] == 'offsetfixed':
+                        offsetfixed = float64(arg[1])
                     if arg[0] == 'ea':
                         ea = float64(arg[1])
                     if arg[0] == 'alpha':
@@ -191,6 +229,7 @@ for file in filelist:
             log.write('Overwriting sigma from command line!')
 
         #depending on the situation of alpha and the lin background we need different amounts of params
+        """
         if (alpha is None) and (linearbackground is False):
             p0 = [0]*4
             p0[0] = offset
@@ -215,18 +254,30 @@ for file in filelist:
             p0[1] = ea
             p0[2] = 1
             p0[3] = 1
+        """
+        p = [0]*5
+
+        p[0] = offset
+        p[1] = ea
+        p[2] = 1
+        p[3] = 1
+        p[4] = 0
        
         #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
-        ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
+        #ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
+    
+        sigma = sigma / 2*sqrt(2*np.log(2))
+        ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
+	ae_func = eval(ae_func)
 
         #actually fit
-        p1 = fl.fit_function_to_data(data, ae_func, p0)
+        p1 = fl.fit_function_to_data(data, ae_func, p)
 
         #log success
         if p1 is not None:
             log.write('============================')
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, sigma)
+            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, sigma, offsetfixed)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
             
@@ -246,6 +297,9 @@ for file in filelist:
             
         if linearbackground is True:
             additions += '_linearbackground'
+
+        if offsetfixed is not None:
+            additions += '_offsetfixed=%s' % offsetfixed
             
         # we offer an option to write an array of x- and y-values to a file
         if args.writefit is True:
@@ -260,7 +314,7 @@ for file in filelist:
         if (args.noshow is False) or (args.nosave is False):
             fig1 = plt.figure()
             ae_x = p1[1]
-            fl.plotES(data, file[1] + ' / AE = %.2f' % ae_x)
+            fl.plotES(complete_data, file[1] + ' / AE = %.2f' % ae_x)
             fl.plot_fit(data, ae_func, p1)
 
             #we annotate the AE in the plot
