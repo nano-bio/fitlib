@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-import helplib as hl
+from . import helplib as hl
 import matplotlib
 
 import matplotlib.pyplot as plt
 
-import fitlib as fl
+from . import fitlib as fl
 
 import argparse
 import os
@@ -64,7 +64,7 @@ for file in filelist:
         data = hl.readfile(file[0])
     except IOError:
         usefulfile = False
-        print 'Could not read: ' + file[0]
+        print('Could not read: ' + file[0])
 
     if usefulfile is True:
         fig1 = plt.figure()

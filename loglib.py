@@ -43,7 +43,7 @@ class Log:
         
             #see if the given or standard logfile can be opened
             try:
-                self.fh = open(self.filename, 'w', buffering = 0)
+                self.fh = open(self.filename, 'w')
             except IOError:
                 #maybe it is supposed to be in a subdirectory and we have to the create said directory
                 directory = os.path.dirname(self.filename)
@@ -51,7 +51,7 @@ class Log:
                     os.makedirs(directory)
 
                 try:
-                    self.fh = open(self.filename, 'w', buffering = 0)
+                    self.fh = open(self.filename, 'w')
                 except:
                     self.nologfile = True
 
@@ -68,7 +68,7 @@ class Log:
             now = ''
             
         if self.nologfile is True and self.tovariable is False:
-            print now + text + '\r\n'
+            print(now + text + '\r\n')
         elif self.nologfile is  True and self.tovariable is True:
             self.logcontent = self.logcontent + now + text + '\r\n'
         else:

@@ -15,16 +15,16 @@ class ChemicalObject():
 
         try:
             self.searchclient = Client(searchurl)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
 
         #define the soap service for inchi-conversion
         inchiurl = 'http://www.chemspider.com/InChI.asmx?WSDL'
 
         try:
             self.inchiclient = Client(inchiurl)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
 
         #set all properties to the ones from initiating call
         self.cas = cas
@@ -88,7 +88,7 @@ class ChemicalObject():
                 time.sleep(self.timetick)
                 i = i + 1
                 if i > (self.maxtime / self.timetick):
-                    print 'No result, aborting'
+                    print('No result, aborting')
                     break
                 
             #ready! the [0] is because it basically gives a list and we use the first one
@@ -104,6 +104,6 @@ class ChemicalObject():
             try:
                 tmp = self.searchclient.service.GetCompoundInfo(self.csid, self.token)
             except suds.WebFault as detail:
-                print detail
+                print(detail)
             self.inchi = tmp[1]
             self.inchikey = tmp[2]

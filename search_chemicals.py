@@ -30,7 +30,7 @@ except:
 
 for line in liste:
     line = line.rstrip('\r\n')
-    print 'Searching for: ' + line
+    print('Searching for: ' + line)
     try:
         compound = ChemicalObject(name = line)
     except IOError:

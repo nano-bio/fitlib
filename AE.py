@@ -155,8 +155,8 @@ for file in filelist:
 
     if usefulfile is True:
         #default values for initial guesses
-        offset = 10
-        ea = 8
+        offset = float64(10)
+        ea = float64(8)
         sigma = float64(1.0)
 
         #by default we don't cut away data
@@ -184,8 +184,6 @@ for file in filelist:
                 if argre.match(arg):
                     #split them up
                     arg = arg.split('=', 2)
-                    print arg[0]
-                    print arg[1]
                     if arg[0] == 'min':
                         minfit = arg[1]
                     if arg[0] == 'max':
@@ -268,7 +266,7 @@ for file in filelist:
     
         sigma = sigma / 2*sqrt(2*np.log(2))
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
-	ae_func = eval(ae_func)
+        ae_func = eval(ae_func)
 
         #actually fit
         p1 = fl.fit_function_to_data(data, ae_func, p)
