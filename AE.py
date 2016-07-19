@@ -264,7 +264,7 @@ for file in filelist:
         #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
         #ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
     
-        sigma = sigma / 2*sqrt(2*np.log(2))
+        sigma = sigma / (2*sqrt(2*np.log(2)))
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
         ae_func = eval(ae_func)
 
@@ -275,14 +275,14 @@ for file in filelist:
         if p1 is not None:
             log.write('============================')
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, sigma, offsetfixed)
+            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, sigma*2*sqrt(2*np.log(2)), offsetfixed)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
             
         #we need to create a more speaking filename
         additions = ''
         
-        additions += '_sigma=%s' % sigma
+        additions += '_sigma=%s' % str(sigma*2*sqrt(2*np.log(2)))
                     
         if alpha is not None:
             additions += '_alpha=%s' % alpha

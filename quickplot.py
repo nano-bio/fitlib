@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-from . import helplib as hl
+import helplib as hl
 import matplotlib
 
 import matplotlib.pyplot as plt
 
-from . import fitlib as fl
+import fitlib as fl
 
 import argparse
 import os
