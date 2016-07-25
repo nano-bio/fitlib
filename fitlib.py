@@ -60,6 +60,7 @@ def AE_func(alpha = None, offsetfixed = None, linearbackground = False):
 
     return base_func
 
+
 # DEPRECATED!
 def get_AE_func(sigma, alpha = None, linearbackground = False):
     #this function defines fit functions for appearance energies
@@ -312,15 +313,20 @@ def fit_function_to_data(data, fitfunc, initial_parameters):
     #calculate the sqrt of the data values for the fit weights
     vecsqrt = vectorize(sqrt)
     vecabs = vectorize(abs)
-    weights = vecsqrt(vecabs(data[:,1] + 1.0))
+    absolutedatavalues = vecabs(data[:,1])
+    weights = vecsqrt(absolutedatavalues)
+    # note that we set all zero values to 1, in order to have useful weights
+    place(weights, weights==0, 1)
 
     #fit
-    p1, success = optimize.leastsq(errfunc, initial_parameters[:], args = (data[:,0],data[:,1]), diag = weights)
-    
-    if success:
-        return p1
-    else:
+    res = optimize.leastsq(errfunc, initial_parameters[:], args = (data[:,0],data[:,1]), diag = weights, full_output = True)
+    (p1, pcov, infodict, errmsg, ier) = res
+
+    # bad luck, didn't converge
+    if ier not in [1, 2, 3, 4]:
         return None
+    else:
+        return p1
     
 def cutarray(data, lowerlim = None, upperlim = None):
     #this function cuts an array and returns it

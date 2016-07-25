@@ -85,29 +85,6 @@ class Log:
         if self.nologfile is not True:
             self.fh.close()
             
-    def printargs(self):
-        if self.cmdargs.filename is not None:
-            self.write('AE.py is in filename-mode.')
-        elif self.cmdargs.folder is not None:
-            self.write('AE.py is in folder-mode.')
-        elif self.cmdargs.filelist is not None:
-            self.write('AE.py is in filelist-mode.')
-            
-        if self.cmdargs.alpha is not None:
-            self.write('Alpha was set in the command line to %s.' % self.cmdargs.alpha)
-            
-        if self.cmdargs.sigma is not None:
-            self.write('Energy resolution was set in the command line to %s eV.' % self.cmdargs.sigma)
-            
-        if self.cmdargs.linearbackground is True:
-            self.write('AE.py was set to fit a linear background (non-constant) from command line.')
-              
-        if self.cmdargs.noshow is True:
-            self.write('AE.py was set to not show any plots from command line.')
-            
-        if self.cmdargs.nosave is True:
-            self.write('AE.py was set to not save any plots from command line.')
-            
     def setargs(self, cmdargs, printargs = True):
         self.cmdargs = cmdargs
         if printargs is True:

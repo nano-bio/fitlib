@@ -30,7 +30,7 @@ filegroup.add_argument("--filelist", help="Specify a file that includes a list o
 
 #those are optional
 parser.add_argument("--alpha", "-a", help="Specify the exponent for the fit function. If not specified, it will be fitted as well", type = float)
-parser.add_argument("--sigma", "-s", help="Specify the FWHM-resolution in eV. If not specified, 1 eV will be assumed", type = float)
+parser.add_argument("--fwhm", "-s", help="Specify the FWHM-resolution in eV. If not specified, 1 eV will be assumed", type = float)
 parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
 parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_true')
@@ -43,7 +43,7 @@ parser.add_argument('--version', action='version', version='r1')
 args = parser.parse_args()
 
 #now we can assign variables from the given arguments
-sigma = args.sigma
+fwhm = args.fwhm
 alpha = args.alpha
 linearbackground = args.linearbackground
 
@@ -56,7 +56,7 @@ if args.outputfolder is not None:
     
 # derive the log class from the loglib and add a function to write AE parameters
 class AELog(loglib.Log):
-    def AE_fit_p(self, params, alpha, min, max, linearbackground, sigma, offsetfixed):
+    def AE_fit_p(self, params, alpha, min, max, linearbackground, fwhm, offsetfixed):
         if alpha is not None:
             self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
         else:
@@ -67,7 +67,7 @@ class AELog(loglib.Log):
         else:
             self.write('Offset: %s, Slope: %s' % (params[0], params[4]))
             
-        self.write('Energy Resolution was set to %s eV FWHM' % sigma)
+        self.write('Energy Resolution was set to %s eV FWHM' % fwhm)
         
         if min is not None:
             self.write('Fit was started at %s eV.' % min)
@@ -77,6 +77,28 @@ class AELog(loglib.Log):
             
         if linearbackground is True:
             self.write('A linear background (non-constant) was used.')
+    def printargs(self):
+        if self.cmdargs.filename is not None:
+            self.write('AE.py is in filename-mode.')
+        elif self.cmdargs.folder is not None:
+            self.write('AE.py is in folder-mode.')
+        elif self.cmdargs.filelist is not None:
+            self.write('AE.py is in filelist-mode.')
+            
+        if self.cmdargs.alpha is not None:
+            self.write('Alpha was set in the command line to %s.' % self.cmdargs.alpha)
+            
+        if self.cmdargs.fwhm is not None:
+            self.write('Energy resolution was set in the command line to %s eV FWHM.' % self.cmdargs.fwhm)
+            
+        if self.cmdargs.linearbackground is True:
+            self.write('AE.py was set to fit a linear background (non-constant) from command line.')
+              
+        if self.cmdargs.noshow is True:
+            self.write('AE.py was set to not show any plots from command line.')
+            
+        if self.cmdargs.nosave is True:
+            self.write('AE.py was set to not save any plots from command line.')
 
 
 log = AELog(outputfolder = outputfolder)
@@ -157,7 +179,7 @@ for file in filelist:
         #default values for initial guesses
         offset = float64(10)
         ea = float64(8)
-        sigma = float64(1.0)
+        fwhm = float64(1.0)
 
         #by default we don't cut away data
         minfit = None
@@ -196,8 +218,8 @@ for file in filelist:
                         ea = float64(arg[1])
                     if arg[0] == 'alpha':
                         alpha = float64(arg[1])
-                    if arg[0] == 'sigma':
-                        sigma = float64(arg[1])
+                    if arg[0] == 'fwhm':
+                        fwhm = float64(arg[1])
                     if arg[0] == 'linearbackground':
                         if arg[1] == 'True':
                             linearbackground = True
@@ -222,9 +244,9 @@ for file in filelist:
             linearbackground = args.linearbackground
             log.write('Overwriting linear background from command line!')
             
-        if args.sigma is not None:
-            sigma = args.sigma
-            log.write('Overwriting sigma from command line!')
+        if args.fwhm is not None:
+            fwhm = args.fwhm
+            log.write('Overwriting FWHM from command line!')
 
         #depending on the situation of alpha and the lin background we need different amounts of params
         """
@@ -264,7 +286,7 @@ for file in filelist:
         #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
         #ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
     
-        sigma = sigma / (2*sqrt(2*np.log(2)))
+        sigma = fwhm / (2*sqrt(2*np.log(2)))
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
         ae_func = eval(ae_func)
 
@@ -275,14 +297,14 @@ for file in filelist:
         if p1 is not None:
             log.write('============================')
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, sigma*2*sqrt(2*np.log(2)), offsetfixed)
+            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, fwhm, offsetfixed)
         else:
             log.write('Failed with fitting of file %s.' % file[0])
             
         #we need to create a more speaking filename
         additions = ''
         
-        additions += '_sigma=%s' % str(sigma*2*sqrt(2*np.log(2)))
+        additions += '_fwhm=%s' % str(fwhm)
                     
         if alpha is not None:
             additions += '_alpha=%s' % alpha
