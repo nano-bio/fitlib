@@ -1,4 +1,1 @@
-G:
-cd software
-cd pyinstaller
-D:\Python27\python.exe pyinstaller.py -F Z:\User\Josi\fitlib\AE.py
+C:\Python35\Scripts\pyinstaller.exe -D AE.spec
