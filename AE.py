@@ -31,6 +31,9 @@ filegroup.add_argument("--filelist", help="Specify a file that includes a list o
 #those are optional
 parser.add_argument("--alpha", "-a", help="Specify the exponent for the fit function. If not specified, it will be fitted as well", type = float)
 parser.add_argument("--fwhm", "-s", help="Specify the FWHM-resolution in eV. If not specified, 1 eV will be assumed", type = float)
+parser.add_argument("--offset", help="Specify the offset. If not specified, an offset of 10 will be assumed", type = float)
+parser.add_argument("--energyshift", help="Specifiy a shift for the AE in eV. If not specified, 0 eV will be assumed", type = float)
+parser.add_argument("--ea", help="Specify the EA in eV. If not specified, 8 eV will be assumed", type = float)
 parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
 parser.add_argument("--nosave", help="Do not save the plots.", action = 'store_true')
@@ -46,6 +49,9 @@ args = parser.parse_args()
 fwhm = args.fwhm
 alpha = args.alpha
 linearbackground = args.linearbackground
+energyshift = args.energyshift
+offset = args.offset
+ea = args.ea
 
 #we need an output folder. default is 'output'
 outputfolder = 'output'
@@ -53,10 +59,10 @@ if args.outputfolder is not None:
     outputfolder = args.outputfolder.rstrip('/')
     if not os.path.exists(outputfolder):
         os.makedirs(outputfolder)
-    
+
 # derive the log class from the loglib and add a function to write AE parameters
 class AELog(loglib.Log):
-    def AE_fit_p(self, params, alpha, min, max, linearbackground, fwhm, offsetfixed):
+    def AE_fit_p(self, params, alpha, min, max, linearbackground, energyshift, fwhm, offsetfixed):
         if alpha is not None:
             self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
         else:
@@ -66,15 +72,18 @@ class AELog(loglib.Log):
             self.write('Offset fixed at: %s, Slope: %s' % (offsetfixed, params[4]))
         else:
             self.write('Offset: %s, Slope: %s' % (params[0], params[4]))
-            
+
         self.write('Energy Resolution was set to %s eV FWHM' % fwhm)
-        
+
+        if energyshift is not None:
+            self.write('Energies were shifted by %s eV.' % energyshift)
+
         if min is not None:
             self.write('Fit was started at %s eV.' % min)
-            
+
         if max is not None:
             self.write('Fit was ended at %s eV.' % max)
-            
+
         if linearbackground is True:
             self.write('A linear background (non-constant) was used.')
     def printargs(self):
@@ -84,29 +93,29 @@ class AELog(loglib.Log):
             self.write('AE.py is in folder-mode.')
         elif self.cmdargs.filelist is not None:
             self.write('AE.py is in filelist-mode.')
-            
+
         if self.cmdargs.alpha is not None:
             self.write('Alpha was set in the command line to %s.' % self.cmdargs.alpha)
-            
+
         if self.cmdargs.fwhm is not None:
             self.write('Energy resolution was set in the command line to %s eV FWHM.' % self.cmdargs.fwhm)
-            
+
         if self.cmdargs.linearbackground is True:
             self.write('AE.py was set to fit a linear background (non-constant) from command line.')
-              
+
         if self.cmdargs.noshow is True:
             self.write('AE.py was set to not show any plots from command line.')
-            
+
         if self.cmdargs.nosave is True:
             self.write('AE.py was set to not save any plots from command line.')
 
 
 log = AELog(outputfolder = outputfolder)
 
-#set arguments in the log object
+# set arguments in the log object
 log.setargs(args)
 
-#this is tricky. if we don't plot, we need to use a different backend for matplotlib, as the normal one crashes if plot is not called
+# this is tricky. if we don't plot, we need to use a different backend for matplotlib, as the normal one crashes if plot is not called
 import matplotlib
 if (args.noshow is True) and (args.nosave is False):
     matplotlib.use('PDF')
@@ -139,10 +148,10 @@ elif args.filelist is not None:
 
     #in this we have to read the list of filenames in a file
     f = hl.openfile(args.filelist)
-    
+
     #we can also compile a regex for the optional arguments
     argre = re.compile('^[a-z]+=(([0-9]+(\.)?[0-9]?)|(True|False))+$')
-    
+
     for line in f:
         #we split the array by whitespaces or tabs (split tries both)
         line = line.strip('\r\n').split()
@@ -160,11 +169,11 @@ elif args.filelist is not None:
 if len(filelist) > 5:
     args.noshow = True
     log.write('Not showing any plots, because there are more than 5 files to deal with.')
-    
-#one empty line in the logfile
+
+# one empty line in the logfile
 log.emptyline()
 
-#let's walk our filelist
+# let's walk our filelist
 for file in filelist:
     #this variable is set to false if we encounter a non-readable file
     usefulfile = True
@@ -176,11 +185,6 @@ for file in filelist:
         log.ioerror(file[0])
 
     if usefulfile is True:
-        #default values for initial guesses
-        offset = float64(10)
-        ea = float64(8)
-        fwhm = float64(1.0)
-
         #by default we don't cut away data
         minfit = None
         maxfit = None
@@ -188,9 +192,15 @@ for file in filelist:
         #by default we don't have the offset fixed
         offsetfixed = None
 
-        #we want to plot the complete data (and not a subset), so we copy it here
-        #in case it gets cut later
-        complete_data = data
+        # we set the default values for initial guesses, if they weren't set in the arguments
+        if offset is None:
+            offset = float64(10)
+        if ea is None:
+          ea = float64(8)
+        if fwhm is None:
+            fwhm = float64(1.0)
+        if energyshift is None:
+            energyshift = float64(0)
 
         #if there were arguments specified in the filelist, we set them here
         if len(file) > 2:
@@ -225,28 +235,56 @@ for file in filelist:
                             linearbackground = True
                         elif arg[1] == 'False':
                             linearbackground = False
-                        
-            #doesn't do anything if minfit and maxfit are None (and they are by default)
-            data = fl.cutarray(data, lowerlim = minfit, upperlim = maxfit)
-            
+                    if arg[0] == 'energyshift':
+                        energyshift = float64(arg[1])
+
+            # adapt the energyshift to minfit and maxfit
+            minfit += energyshift
+            maxfit += energyshift
+
+        # if the energies have to be shifted...
+        if energyshift != 0:
+          # ...we first shift all of the values
+          for set in data:
+            set[0] += energyshift
+
+        # we want to plot the complete data (and not a subset), so we copy it here
+        # in case it gets cut later
+        complete_data = data
+
+        #doesn't do anything if minfit and maxfit are None (and they are by default)
+        data = fl.cutarray(data, lowerlim = minfit, upperlim = maxfit)
+
         #if the standard guess of ea is outside the data range, we set it to the middle of the range
         datamin = float64(data[:,0].min())
         datamax = float64(data[:,0].max())
         if (ea < datamin) or (ea > datamax):
             ea = (datamax - datamin) / 2 + datamin
-            
-        #if alpha or linearbackground were set from commandline, we overwrite the settings from the file
+
+        #if any parameters were set from commandline, we overwrite the settings from the file
         if args.alpha is not None:
             alpha = args.alpha
             log.write('Overwriting alpha from command line!')
-            
+
         if args.linearbackground is True:
             linearbackground = args.linearbackground
             log.write('Overwriting linear background from command line!')
-            
+
         if args.fwhm is not None:
             fwhm = args.fwhm
             log.write('Overwriting FWHM from command line!')
+
+        if args.offset is not None:
+            offset = args.offset
+            log.write('Overwriting offset from command line!')
+
+        if args.ea is not None:
+            ea = args.ea
+            log.write('Overwriting EA from command line!')
+
+        if args.energyshift is not None:
+            energyshift = args.energyshift
+            log.write('Overwriting energyshift from command line!')
 
         #depending on the situation of alpha and the lin background we need different amounts of params
         """
@@ -282,52 +320,55 @@ for file in filelist:
         p[2] = 1
         p[3] = 1
         p[4] = 0
-       
+
         #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
         #ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
-    
+
         sigma = fwhm / (2*sqrt(2*np.log(2)))
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
         ae_func = eval(ae_func)
 
         #actually fit
-        p1 = fl.fit_function_to_data(data, ae_func, p)
+        errmsg, p1 = fl.fit_function_to_data(data, ae_func, p)
 
         #log success
         if p1 is not None:
             log.write('============================')
             log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, fwhm, offsetfixed)
+            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, energyshift, fwhm, offsetfixed)
         else:
-            log.write('Failed with fitting of file %s.' % file[0])
-            
+            log.write('Failed with fitting of file %s. Error: %s' % (file[0], errmsg))
+
         #we need to create a more speaking filename
         additions = ''
-        
+
         additions += '_fwhm=%s' % str(fwhm)
-                    
+
         if alpha is not None:
             additions += '_alpha=%s' % alpha
-        
+
         if minfit is not None:
             additions += '_min=%s' % minfit
-            
+
         if maxfit is not None:
             additions += '_max=%s' % maxfit
-            
+
         if linearbackground is True:
             additions += '_linearbackground'
 
+        if energyshift is not None:
+            additions += '_energyshift=%s' % energyshift
+
         if offsetfixed is not None:
             additions += '_offsetfixed=%s' % offsetfixed
-            
+
         # we offer an option to write an array of x- and y-values to a file
         if args.writefit is True:
             fitdata = fl.data_from_fit_and_parameters(data, ae_func, p1)
-            
+
             arrayfilename = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '_fitarray.txt'))
             hl.writearray(fitdata, arrayfilename)
-            
+
             log.write('Wrote array to %s' % arrayfilename)
 
         #we don't even need to plot if we neither save nor show
@@ -349,7 +390,7 @@ for file in filelist:
                 fig1.text(0.15, 0.85, annotate_string,
                         verticalalignment='top', horizontalalignment='left',
                         color='green', fontsize=15)
-            
+
         if args.nosave is False:
             plotfile = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf'))
             plt.savefig(plotfile, format='pdf')

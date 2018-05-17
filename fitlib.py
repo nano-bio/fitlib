@@ -28,7 +28,7 @@ elif __name__ == 'fitlib.fitlib':
     import matplotlib
     matplotlib.use('PDF')
 
-    #now we can import matplotlib completely, because the backend is now set
+    # now we can import matplotlib completely, because the backend is now set
     import matplotlib.pyplot as plt
 
 
@@ -39,11 +39,11 @@ def pbdv_fa(x,y):
 
 
 def AE_func(alpha = None, offsetfixed = None, linearbackground = False):
-    #this function defines fit functions for appearance energies
-    #they are of the form b + (x-AE)^a convoluted with a gaussian
-    #see file docs/AE_conv.pdf for details
+    # this function defines fit functions for appearance energies
+    # they are of the form b + (x-AE)^a convoluted with a gaussian
+    # see file docs/AE_conv.pdf for details
 
-    #0 = offset, 1 is EA, 2 is a factor, 3 is alpha, 4 is the linear background
+    # 0 = offset, 1 is EA, 2 is a factor, 3 is alpha, 4 is the linear background
 
     base_func = 'lambda p, x: p[2]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*fl.pbdv_fa(-(alpha+1), (p[1]-x)/sigma)'
 
@@ -63,13 +63,13 @@ def AE_func(alpha = None, offsetfixed = None, linearbackground = False):
 
 # DEPRECATED!
 def get_AE_func(sigma, alpha = None, linearbackground = False):
-    #this function defines fit functions for appearance energies
-    #they are of the form b + (x-AE)^a convoluted with a gaussian
-    #see file docs/AE_conv.pdf for details
+    # this function defines fit functions for appearance energies
+    # they are of the form b + (x-AE)^a convoluted with a gaussian
+    # see file docs/AE_conv.pdf for details
     
     sigma = sigma / 2*sqrt(2*log(2))
     
-    #0 = offset, 1 is EA, 2 is a factor, 3 is alpha or the linear bg, 4 is the linear background
+    # 0 = offset, 1 is EA, 2 is a factor, 3 is alpha or the linear bg, 4 is the linear background
     
     if linearbackground is False:
         if alpha is not None:
@@ -77,7 +77,7 @@ def get_AE_func(sigma, alpha = None, linearbackground = False):
         else:
             fitfunc = lambda p, x: p[0] + p[2]*sigma**p[3]*gamma(p[3]+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(p[3]+1), (p[1]-x)/sigma)
     elif linearbackground is True:
-        #this one supports a linear background. needs one more parameter
+        # this one supports a linear background. needs one more parameter
         if alpha is not None:
             fitfunc = lambda p, x: p[0] + p[3]*x + p[2]*sigma**alpha*gamma(alpha+1)*exp(-1.0/(4.0*sigma**2)*(p[1]-x)**2)*pbdv_fa(-(alpha+1), (p[1]-x)/sigma)
         else:
@@ -127,8 +127,9 @@ def get_multiple_AE_func(numonsets, alpha = None):
 
     return complete_expr
 
+
 def gaussfunctions(numpeaks, linear_addition = False):
-    #this function defines gauss-shapes for (numpeaks) peaks
+    # this function defines gauss-shapes for (numpeaks) peaks
     expr_list = []
 
     # 9 gaussians ought to be enough for anybody.
@@ -309,24 +310,72 @@ def fit_function_to_data(data, fitfunc, initial_parameters):
 
     # Distance to the target function
     errfunc = lambda p, x, y: fitfunc(p, x) - y
-    
+
+
+
+    # diag=weights apparently sets weight on the parameters in initial_parameters, not the fit data
+    # the following block within ( ) will therefore be ignored, and 'diag=weights' removed from the optimize.leastsq call
+
+    # (
     #calculate the sqrt of the data values for the fit weights
-    vecsqrt = vectorize(sqrt)
-    vecabs = vectorize(abs)
-    absolutedatavalues = vecabs(data[:,1])
-    weights = vecsqrt(absolutedatavalues)
+    #vecsqrt = vectorize(sqrt)
+    #vecabs = vectorize(abs)
+    #absolutedatavalues = vecabs((data[:,1]))
+    #weights = vecsqrt(absolutedatavalues)
     # note that we set all zero values to 1, in order to have useful weights
-    place(weights, weights==0, 1)
+    #place(weights, weights==0, 1)
+    # )
 
     #fit
-    res = optimize.leastsq(errfunc, initial_parameters[:], args = (data[:,0],data[:,1]), diag = weights, full_output = True)
+#    res = optimize.curve_fit(errfunc, data[:,0], data[:,1], initial_parameters[:])
+
+    # we do a first fit and work then from there
+    res = optimize.leastsq(errfunc, initial_parameters[:], args = (data[:,0],data[:,1]), full_output = True, maxfev=1000*(len(initial_parameters) +1))
     (p1, pcov, infodict, errmsg, ier) = res
+
+    # copy data for cutting down to significant area.
+    cutdata = data
+    newae = p1[1]
+
+    #fit another n times while closing in on the EA
+    for iteration in []:
+        #find the position in data[] where the found ae lies
+        aepos = 0
+        for energy in cutdata[:,0]:
+            if energy < newae:
+              aepos += 1
+            else:
+              break
+
+        dl = len(cutdata)
+
+        #We'll cut data to energy entries within 90% of the fitted AE in order to get a better fit around that point
+        #where are we in the following loop
+        i = 0
+
+        #a buffer to save the cut data to
+        buff_cutdata = []
+
+        for energy in cutdata[:,0]:
+
+            #cut data down to 90% of its data points, where the amount left and right of AE stay proportionate
+            if i > 0.1 * aepos and i < (0.1 * aepos + 0.9*dl):
+                buff_cutdata.append(cutdata[i,:])
+            i += 1
+
+        cutdata = np.array(buff_cutdata)
+
+        #fit again to compare initial_parameters[1] before and after
+        res = optimize.leastsq(errfunc, p1, args = (cutdata[:,0],cutdata[:,1]), full_output = True, maxfev=1000*(len(initial_parameters) +1))
+        (p1, pcov, infodict, errmsg, ier) = res
+
+        newae = p1[1]
 
     # bad luck, didn't converge
     if ier not in [1, 2, 3, 4]:
-        return None
+        return errmsg, None
     else:
-        return p1
+        return None, p1
     
 def cutarray(data, lowerlim = None, upperlim = None):
     #this function cuts an array and returns it
