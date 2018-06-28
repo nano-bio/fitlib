@@ -324,12 +324,15 @@ for file in filelist:
         #retrieve function for Appearance Energy - the alpha is None if not specified, hence returning a function with alpha fit-able
         #ae_func = fl.get_AE_func(sigma, alpha, linearbackground)
 
-        sigma = fwhm / (2*sqrt(2*np.log(2)))
+        #sigma = fwhm / (2*sqrt(2*np.log(2)))
+
+        sigma = 0.25 / (2*sqrt(2*np.log(2)))
+
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
         ae_func = eval(ae_func)
 
         #actually fit
-        errmsg, p1 = fl.fit_function_to_data(data, ae_func, p)
+        errmsg, p1, err, lowerfitbound, upperfitbound = fl.fit_function_to_data(data, ae_func, p)
 
         #log success
         if p1 is not None:
@@ -375,8 +378,8 @@ for file in filelist:
         if (args.noshow is False) or (args.nosave is False):
             fig1 = plt.figure()
             ae_x = p1[1]
-            fl.plotES(complete_data, file[1] + ' / AE = %.2f' % ae_x)
-            fl.plot_fit(data, ae_func, p1)
+            fl.plotES(complete_data, file[1] + ' / AE = %.2f, ERR=%.5f' % (ae_x, err)) # plot data
+            fl.plot_fit_with_testinfo(data, ae_func, p1, lowerfitbound, upperfitbound) # plot fit
 
             #we annotate the AE in the plot
             if args.writetoplot is True:
@@ -386,7 +389,7 @@ for file in filelist:
                 else:
                     alpha_value = p1[3]
 
-                annotate_string = 'AE = %.2f\n$\\alpha$ = %.3f' %(ae_x, alpha_value)
+                annotate_string = 'AE = %.2f\n$\\alpha$ = %.3f, err=%.2f' %(ae_x, alpha_value,err)
                 fig1.text(0.15, 0.85, annotate_string,
                         verticalalignment='top', horizontalalignment='left',
                         color='green', fontsize=15)

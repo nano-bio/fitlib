@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/fitlib.py" line="333" />
+    <bookmark url="file://$PROJECT_DIR$/fitlib.py" line="40" />
+    <bookmark url="file://$PROJECT_DIR$/fitlib.py" line="53" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ce8159c8-2d57-49b8-b064-07eb58695e29" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -11,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="AE.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AE.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AE.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="377" column="12" selection-start-line="377" selection-start-column="12" selection-end-line="377" selection-end-column="12" />
+            <state relative-caret-position="323">
+              <caret line="325" lean-forward="true" selection-start-line="325" selection-end-line="325" />
               <folding>
                 <element signature="e#19#38#0" expanded="true" />
               </folding>
@@ -23,20 +28,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="codecs.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/codecs.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="308" selection-start-line="308" selection-end-line="308" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fitlib.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fitlib.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fitlib.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="656">
-              <caret line="372" lean-forward="true" selection-start-line="372" selection-end-line="372" />
+            <state relative-caret-position="160">
+              <caret line="299" column="9" selection-start-line="299" selection-start-column="9" selection-end-line="299" selection-end-column="9" />
               <folding>
                 <element signature="e#18#37#0" expanded="true" />
               </folding>
@@ -48,36 +44,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>p[2]</find>
-      <find>log</find>
-      <find>for</find>
-      <find>fit_function</find>
-      <find>leastsq</find>
-      <find>factor</find>
-      <find>p[0]</find>
-      <find>weight</find>
-      <find>length</find>
-      <find>initial_parameters[:]</find>
-      <find>++</find>
-      <find>++ += 1</find>
-      <find>fit_function_to_data</find>
-      <find>hl</find>
-      <find>len(file</find>
-      <find>AE_fit_pAE_fit_p</find>
-      <find>complete</find>
-      <find>energyshift</find>
-      <find>offset</find>
-      <find>default values</find>
-      <find>fwhm</find>
-      <find>AE_fit_p</find>
-      <find>is not none</find>
       <find>dl</find>
-      <find>newdata</find>
-      <find>cpy_cutdata</find>
-      <find>data</find>
-      <find>complete_data</find>
-      <find>Andreas</find>
+      <find>dog</find>
+      <find>annotate_string</find>
+      <find>sigma=weights</find>
+      <find>linearbackground</find>
+      <find>curve_fit</find>
+      <find>stddev</find>
+      <find>r--</find>
+      <find>r--g</find>
+      <find>weights</find>
+      <find>plt</find>
+      <find>place</find>
+      <find>cutarray</find>
+      <find>fit_function</find>
+      <find>plot_fit</find>
+      <find>fitfunc</find>
+      <find>testin</find>
+      <find>float</find>
+      <find>do_the</find>
+      <find>numpy.hea</find>
+      <find>base_fun</find>
+      <find>base_func</find>
+      <find>do_the_fit</find>
+      <find>sqrt</find>
+      <find>fit_func</find>
+      <find>sigma</find>
+      <find>buf</find>
       <find>plot</find>
+      <find>fwhm</find>
+      <find>cut_</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -87,13 +83,13 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/AE.py" />
         <option value="$PROJECT_DIR$/fitlib.py" />
+        <option value="$PROJECT_DIR$/AE.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="953" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
   </component>
@@ -106,7 +102,15 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="D:/Dropbox/AG Denifl/Python" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
+    <property name="settings.editor.selected.configurable" value="pyconsole" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="fitlib" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="fitlib" />
+      </console-settings>
+    </option>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -129,12 +133,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AE_data/" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AE_data/2-Nitroimidazole" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/AE.py" />
-      <option name="PARAMETERS" value="--filename &quot;NE_calibration_112C_I01F_20p4.txt&quot; --offset 5" />
+      <option name="PARAMETERS" value="--filename scan_103C_AE_30p2_I013_30p2.txt --energyshift 1.22" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -186,22 +190,41 @@
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.3611691" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.22727273" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" weight="0.0" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32896176" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3517316" />
+      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" weight="0.0" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.22402598" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32900432" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.29978356" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32900432" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.29761904" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32946146" />
     </layout>
+    <layout-to-restore>
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.22835498" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.3611691" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.29545453" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32900432" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32896176" />
+      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" weight="0.0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.35281384" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+    </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -221,28 +244,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/fitlib.py</url>
-          <line>342</line>
-          <option name="timeStamp" value="92" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/fitlib.py</url>
-          <line>365</line>
-          <option name="timeStamp" value="93" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/fitlib.py</url>
-          <line>340</line>
-          <option name="timeStamp" value="94" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/fitlib.py</url>
-          <line>374</line>
-          <option name="timeStamp" value="95" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/fitlib.py</url>
-          <line>332</line>
-          <option name="timeStamp" value="96" />
+          <line>369</line>
+          <option name="timeStamp" value="143" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -255,22 +258,8 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="98" />
+      <option name="time" value="147" />
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="aepos" language="Python" />
-        <watch expression="dl" language="Python" />
-        <watch expression="aepos/dl" language="Python" />
-        <watch expression="i" language="Python" />
-        <watch expression="math.fabs((i-aepos))&lt;0.9*dl" language="Python" />
-        <watch expression="0.9*dl" language="Python" />
-        <watch expression="math.fabs(i-aepos)" language="Python" />
-        <watch expression="cutdata" language="Python" />
-        <watch expression="newae" language="Python" />
-        <watch expression="p1" language="Python" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
@@ -297,37 +286,12 @@
     </expressions>
     <expressions id="watch">
       <expression>
-        <expression-string>initial_parameters[:]</expression-string>
+        <expression-string>sigma</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>data[:,1]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>data[:,0]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>infodict</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>p1</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>newae</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>cutdata</expression-string>
+        <expression-string>initial_parameters</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -337,17 +301,57 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>math.fabs(i-aepos)</expression-string>
+        <expression-string>iteration</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>0.9*dl</expression-string>
+        <expression-string />
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string />
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string />
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>cdl*cutpercent</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>cdl*(1-cutpercent)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>cdl</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>newae</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>fwhm</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>sigma</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>infodict</expression-string>
         <language-id>Python</language-id>
@@ -355,11 +359,6 @@
       </expression>
       <expression>
         <expression-string>len(newdata)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>newae</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -383,19 +382,95 @@
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>math.fabs(i-aepos)/dl</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>math.fabs(i-aepos)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5202">
+          <caret line="306" column="7" selection-start-line="306" selection-start-column="7" selection-end-line="306" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/scipy/optimize/minpack.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13158">
+          <caret line="789" column="25" selection-start-line="789" selection-start-column="25" selection-end-line="789" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fitlib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="850">
+          <caret line="65" column="63" lean-forward="true" selection-start-line="65" selection-start-column="63" selection-end-line="65" selection-end-column="63" />
+          <folding>
+            <element signature="e#18#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AE.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5406">
+          <caret line="331" selection-start-line="331" selection-end-line="331" />
+          <folding>
+            <element signature="e#19#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5202">
+          <caret line="306" column="7" selection-start-line="306" selection-start-column="7" selection-end-line="306" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/scipy/optimize/minpack.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13158">
+          <caret line="789" column="25" selection-start-line="789" selection-start-column="25" selection-end-line="789" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fitlib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="56" column="42" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AE.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5406">
+          <caret line="331" selection-start-line="331" selection-end-line="331" />
+          <folding>
+            <element signature="e#19#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5202">
+          <caret line="306" column="7" lean-forward="true" selection-start-line="306" selection-start-column="7" selection-end-line="306" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/scipy/optimize/minpack.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13158">
+          <caret line="789" column="25" lean-forward="true" selection-start-line="789" selection-start-column="25" selection-end-line="789" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fitlib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="56" column="42" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/AE.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5049">
@@ -410,9 +485,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2057">
           <caret line="136" column="36" selection-start-line="136" selection-start-column="36" selection-end-line="136" selection-end-column="36" />
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -430,9 +502,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2312">
           <caret line="136" column="36" lean-forward="true" selection-start-line="136" selection-start-column="36" selection-end-line="136" selection-end-column="36" />
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -450,9 +519,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5610">
           <caret line="330" column="35" selection-start-line="330" selection-start-column="35" selection-end-line="330" selection-end-column="35" />
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -470,9 +536,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5457">
           <caret line="321" column="74" selection-start-line="321" selection-start-column="74" selection-end-line="321" selection-end-column="74" />
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -490,9 +553,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5457">
           <caret line="321" column="74" lean-forward="true" selection-start-line="321" selection-start-column="74" selection-end-line="321" selection-end-column="74" />
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -510,9 +570,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5457">
           <caret line="321" lean-forward="true" selection-start-line="321" selection-end-line="321" />
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -529,9 +586,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5474">
           <caret line="322" selection-start-line="322" selection-end-line="322" />
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -540,15 +594,6 @@
         <state>
           <folding>
             <element signature="e#19#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fitlib.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#18#37#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -624,13 +669,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="1071" selection-start-line="1071" selection-end-line="1071" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -652,36 +690,64 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/numpy/lib/twodim_base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4335">
+          <caret line="262" selection-start-line="262" selection-end-line="262" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/scipy/optimize/_lsq/least_squares.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="798" selection-start-line="798" selection-end-line="798" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/scipy/optimize/minpack.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="397" selection-start-line="397" selection-end-line="397" />
+        <state relative-caret-position="651">
+          <caret line="752" selection-start-line="752" selection-end-line="752" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2488">
+          <caret line="1642" column="34" lean-forward="true" selection-start-line="1642" selection-start-column="34" selection-end-line="1642" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-1598016785/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="132" column="4" selection-start-line="132" selection-start-column="4" selection-end-line="132" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
+        <state relative-caret-position="425">
           <caret line="308" selection-start-line="308" selection-end-line="308" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AE.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="377" column="12" selection-start-line="377" selection-start-column="12" selection-end-line="377" selection-end-column="12" />
-          <folding>
-            <element signature="e#19#38#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fitlib.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="656">
-          <caret line="372" lean-forward="true" selection-start-line="372" selection-end-line="372" />
+        <state relative-caret-position="160">
+          <caret line="299" column="9" selection-start-line="299" selection-start-column="9" selection-end-line="299" selection-end-column="9" />
           <folding>
             <element signature="e#18#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AE.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="325" lean-forward="true" selection-start-line="325" selection-end-line="325" />
+          <folding>
+            <element signature="e#19#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
