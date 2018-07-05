@@ -326,7 +326,7 @@ for file in filelist:
 
         #sigma = fwhm / (2*sqrt(2*np.log(2)))
 
-        sigma = 0.25 / (2*sqrt(2*np.log(2)))
+        sigma = 0.4 / (2*sqrt(2*np.log(2)))
 
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
         ae_func = eval(ae_func)

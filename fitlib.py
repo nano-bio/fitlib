@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 from numpy import *
 from scipy import *
 from scipy.special import *
@@ -273,13 +274,140 @@ def do_the_fit(fitfunc, data, initial_parameters, weights=[]):
     return res[0], np.sqrt(np.diag(res[1]))
 
 
-def fit_function_to_data(data, fitfunc, initial_parameters):
+def fit_function_to_data(data, fitfunc, p):
     #data has to be a numpy array
     #fits the function to data[:,0] (as x) and data[:,1] (as y) using the initial_parameters
     #returns an array of parameters of the same size as initial_parameters in case of success
     #returns None if data couldn't be fitted
 
 
+    error = None
+
+    weights = set_fit_weights(data)
+
+    # a first fit to see where the EA roughly is at
+    initial_parameters, stddevs = do_the_fit(fitfunc, data, p, weights)
+
+    cutpercent = 0.9
+
+    #find number of iterations to take place where the data is cut down by x %
+    n = find_number_of_iterations(len(data), cutpercent)
+
+    cutdata = data
+
+    #fit another n times while closing in on the EA
+    for iteration in range(0, n):
+
+        # get the position of EA in the data
+        ae_pos = find_ae_position(cutdata, p[1])
+
+        #ae_pos has to be valid
+        if ae_pos != -1:
+
+          # use that position, to cut the data down to cutpercent*100% of its size, with 45% above and below the EA
+
+          # and fit again
+          p, stddevs = do_the_fit(fitfunc, cutdata, p, weights)
+
+          cutdata = cut_relatively_equal(data, ae_pos, cutpercent**iteration)
+        else:
+            error = "data too small"
+            break
+
+
+    # bad luck, didn't converge
+#    if ier not in [1, 2, 3, 4]:
+#        return errmsg, None
+#    else:
+    return error, p, stddevs[1], cutdata[0][0], cutdata[len(cutdata)-1][0]
+
+def find_number_of_iterations(data_length, cutpercent):
+
+    #set a minimum of datapoints that are needed to do a decent fit (experimental value) (still not sure/experimenting)
+    min_data_points = 100
+
+    # n is equal to the number of iterations that it will take to get the data points down to its minimum, when it is
+    # cut by cutpercent*100 % every iteration.
+    # the int() cast will floor the number, which will most likely lead to having more than min_data_points
+    # data points left to fit.
+
+    n = int(log(min_data_points/data_length)/log(cutpercent))
+
+    return n
+
+def find_ae_position(data, ae):
+    # find the position in data[] where the found ae lies
+    ae_pos = 0
+    for energy in data[:, 0]:
+        if energy < ae:
+            ae_pos += 1
+        else:
+            break
+
+    if ae_pos == len(data):
+        ae_pos = -1
+
+    return ae_pos
+
+
+def cut_relatively_proportional(cutdata, ae_pos, cutpercent):
+# cut data down to cutpercent*100 % of its data points, where the amount left and right of AE stay proportionate to
+# the existing data
+
+  e_pos = 0
+  ret_cutdata = []
+  cdl = len(cutdata)
+
+  for energy in cutdata[:,0]:
+    if e_pos > (1-cutpercent) * ae_pos and e_pos < ((1-cutpercent) * ae_pos + cutpercent*cdl):
+        ret_cutdata.append(cutdata[e_pos,:])
+    e_pos += 1
+
+def cut_relatively_equal(cutdata, ae_pos, cutpercent):
+  # cuts data down to cutpercent*100 % of its size, with EA in the middle
+  # if however there are not enough data points on one of the sides to guarantee cutpercent*100 % of the data
+  # more of the other side will be added.
+
+  cdl = len(cutdata)
+  buff_cutdata = []
+
+  buff_cutdata.append(cutdata[ae_pos,:])
+
+  #deviation from ae
+  deviation = 1
+
+  # -0.004999 because round() cant be bothered
+  while len(buff_cutdata)/cdl <= cutpercent-0.004999:
+    current_pos = ae_pos-deviation
+
+    if current_pos >= 0:
+      buff_cutdata.insert(0,cutdata[current_pos, :])
+
+    current_pos = ae_pos+deviation
+
+    if current_pos < cdl:
+      buff_cutdata.append(cutdata[current_pos, :])
+
+    deviation += 1
+
+  return np.array(buff_cutdata)
+
+def cut_to_ev(cutdata, ae_pos, ev):
+    # cut data down to +- ev around ae_pos
+#!! definitely improve list and numpy.array usage
+    e_pos = 0
+    ae = cutdata[ae_pos,0]
+    ret_cutdata = []
+
+    for energy in cutdata[:, 0]:
+        if abs(energy - ae) < ev:
+            ret_cutdata.append(np.array(cutdata[e_pos, :]))
+        e_pos += 1
+
+    return np.array(ret_cutdata)
+
+
+def set_fit_weights(data):
     # calculate the sqrt of the data values for the fit weights
 
     vecsqrt = vectorize(lambda x: x**(1/2))
@@ -290,85 +418,7 @@ def fit_function_to_data(data, fitfunc, initial_parameters):
     # note that we set all zero values to 1, in order to have useful weights
     place(weights, weights==0, 1)
 
-    #fit
-    initial_parameters, stddevs = do_the_fit(fitfunc, data, initial_parameters, weights)
-
-    # copy data for cutting down to significant area.
-    cutdata = data
-    newae = initial_parameters[1]
-    #n = int(sqrt(len(data))/2)
-    n = 3
-
-    #fit another n times while closing in on the EA
-    for iteration in range(0, n):
-        #find the position in data[] where the found ae lies
-        ae_pos = 0
-        for energy in cutdata[:,0]:
-            if energy < newae:
-              ae_pos += 1
-            else:
-              break
-
-        cdl = len(cutdata)
-
-        #We'll cut data to energy entries within some % of the fitted AE in order to get a better fit around that point
-        #where are we in the following loop
-        e_pos = 0
-
-        #a buffer to save the cut data to
-        buff_cutdata = []
-
-         # cut data down to 90% of its data points, where the amount left and right of AE stay proportionate
-#        for energy in cutdata[:,0]:
-#            if e_pos > 0.1 * ae_pos and e_pos < (0.1 * ae_pos + 0.9*cdl):
-#                buff_cutdata.append(cutdata[e_pos,:])
-#            e_pos += 1
-
-        cutpercent = 0.90
-        cutpercent = cutpercent/2
-
-        # cut data down to cut_percent of its data points, where the amount left and right gets cut down symmectrically around ae_pos
-        for energy in cutdata[:,0]:
-            #if abs(e_pos - ae_pos)<cdl*cutpercent/2:
-            #if e_pos > ae_pos - cdl*cutpercent/2 and e_pos < ae_pos + cdl*cutpercent/2:
-            if e_pos >= ae_pos - cdl * cutpercent  and e_pos <= ae_pos + cdl * cutpercent:
-                buff_cutdata.append(cutdata[e_pos,:])
-            e_pos += 1
-
-        cutdata = np.array(buff_cutdata)
-
-        #fit again to compare initial_parameters[1] before and after
-        initial_parameters, stddevs = do_the_fit(fitfunc, cutdata, initial_parameters, weights)
-
-        newae = initial_parameters[1]
-
-    cutdata, initial_parameters, stdevs = cut_to_ev(fitfunc, cutdata, 1, initial_parameters)
-
-    # bad luck, didn't converge
-#    if ier not in [1, 2, 3, 4]:
-#        return errmsg, None
-#    else:
-    return None, initial_parameters, stddevs[1], cutdata[0][0], cutdata[len(cutdata)-1][0]
-    
-def cut_to_ev(fitfunc, cutdata, ev, p):
-    # cut data down to +- ev around ae_pos
-#!! definitely improve list and numpy.array usage
-    e_pos = 0
-    ae = p[1]
-    ret_cutdata = []
-
-    for energy in cutdata[:, 0]:
-
-        if abs(energy - ae) < ev:
-            ret_cutdata.append(np.array(cutdata[e_pos, :]))
-        e_pos += 1
-
-    ret_cutdata = np.array(ret_cutdata)
-
-    initial_parameters, stdevs = do_the_fit(fitfunc, cutdata, p)
-
-    return ret_cutdata, initial_parameters, stdevs
-
+    return weights
 
 def cutarray(data, lowerlim = None, upperlim = None):
     #this function cuts an array and returns it
