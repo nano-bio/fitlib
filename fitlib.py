@@ -218,7 +218,8 @@ def plotES(data, title):
     plt.ylabel('Counts (1/s)')
     plt.grid(True)
     plt.title(title)
-    
+
+    # deprecated
 def data_from_fit_and_parameters(data, fitfunc, parameters):
     minimumpoints = 20
 
@@ -237,29 +238,37 @@ def data_from_fit_and_parameters(data, fitfunc, parameters):
     
     return a
 
-def plot_fit(data, fitfunc, parameters):
+def plot_fit(data, fitfunc, p):
     #use above function create equidistant x points for plotting the fit
-    data = data_from_fit_and_parameters(data, fitfunc, parameters)
+    data = data_from_fit_and_parameters(data, fitfunc, p)
 
     #plot
     plt.plot(data[:, 0],data[:, 1], 'r--', linewidth=3)
     #mark AE
-    plt.plot(parameters[1],0,'g|', linewidth=10)
+    plt.plot(p[1],0,'g|', linewidth=10)
 
-def plot_fit_with_testinfo(data, fitfunc, parameters, upperfitlimit, lowerfitlimit):
+def plot_fit_with_testinfo(data, fitfunc, p, upperfitlimit, lowerfitlimit):
     #use above function create equidistant x points for plotting the fit
-    data = data_from_fit_and_parameters(data, fitfunc, parameters)
+    fitdata = data_from_fit_and_parameters(data, fitfunc, p)
 
     #plot
-    plt.plot(data[:, 0],data[:, 1], 'r--', linewidth=3)
+    plt.plot(fitdata[:, 0],fitdata[:, 1], 'r--', linewidth=3)
+
+    #a bit redundant to get data from fit AGAIN to substract
+    diffdata = remove_fit_from_data(data,fitfunc, p)
+    #for testing: plot data-fitfunction
+    plt.plot(diffdata[:,0], diffdata[:,1], 'g-', linewidth=2)
+    #diffdata enthält nur 0en
+
     #mark AE
-    plt.plot(parameters[1],0,'g|', linewidth=10)
+    plt.plot(p[1],0,'g|', linewidth=10)
 
     plt.plot(upperfitlimit, 0, 'y>', linewidth=10)
     plt.plot(lowerfitlimit, 0, 'y<', linewidth=10)
 
-#!! weights has not been implemented
+#!! weights has not been implemented, so far not needed
 def do_the_fit(fitfunc, data, initial_parameters, weights=[]):
+
     res = optimize.curve_fit(fitfunc,
                              data[:, 0],
                              data[:, 1],
@@ -273,7 +282,6 @@ def do_the_fit(fitfunc, data, initial_parameters, weights=[]):
     #return initial_parameters and stddev for the parameters
     return res[0], np.sqrt(np.diag(res[1]))
 
-
 def fit_function_to_data(data, fitfunc, p):
     #data has to be a numpy array
     #fits the function to data[:,0] (as x) and data[:,1] (as y) using the initial_parameters
@@ -286,7 +294,7 @@ def fit_function_to_data(data, fitfunc, p):
     weights = set_fit_weights(data)
 
     # a first fit to see where the EA roughly is at
-    initial_parameters, stddevs = do_the_fit(fitfunc, data, p, weights)
+    p, stddevs = do_the_fit(fitfunc, data, p, weights)
 
     cutpercent = 0.9
 
@@ -305,11 +313,10 @@ def fit_function_to_data(data, fitfunc, p):
         if ae_pos != -1:
 
           # use that position, to cut the data down to cutpercent*100% of its size, with 45% above and below the EA
+          cutdata = cut_relatively_equal(data, ae_pos, cutpercent**iteration)
 
           # and fit again
           p, stddevs = do_the_fit(fitfunc, cutdata, p, weights)
-
-          cutdata = cut_relatively_equal(data, ae_pos, cutpercent**iteration)
         else:
             error = "data too small"
             break
@@ -324,6 +331,7 @@ def fit_function_to_data(data, fitfunc, p):
 def find_number_of_iterations(data_length, cutpercent):
 
     #set a minimum of datapoints that are needed to do a decent fit (experimental value) (still not sure/experimenting)
+    #not pretty but seems to be working well so far with tested data
     min_data_points = 100
 
     # n is equal to the number of iterations that it will take to get the data points down to its minimum, when it is
@@ -405,6 +413,19 @@ def cut_to_ev(cutdata, ae_pos, ev):
         e_pos += 1
 
     return np.array(ret_cutdata)
+
+def remove_fit_from_data(data, fitfunc, p):
+
+    fitdata = data_from_fit_and_parameters(data, fitfunc, p)
+    newdata = []
+    i=0
+    for datapoint in fitdata:
+
+        newdata.append([data[i][0], data[i][1]-fitdata[i][1]])
+        i+=1
+
+    return np.array(newdata)
+
 
 
 def set_fit_weights(data):

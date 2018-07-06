@@ -16,13 +16,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="AE.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AE.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AE.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2009">
-              <caret line="354" selection-start-line="354" selection-end-line="354" />
+            <state relative-caret-position="394">
+              <caret line="337" lean-forward="true" selection-start-line="337" selection-end-line="337" />
               <folding>
                 <element signature="e#19#38#0" expanded="true" />
+                <element signature="e#5338#5397#0" />
+                <element signature="e#12739#12946#0" />
               </folding>
             </state>
           </provider>
@@ -37,11 +39,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fitlib.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fitlib.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fitlib.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="301" column="48" lean-forward="true" selection-start-line="301" selection-start-column="48" selection-end-line="301" selection-end-column="48" />
+            <state relative-caret-position="347">
+              <caret line="256" selection-start-line="256" selection-end-line="256" />
+              <folding>
+                <element signature="e#472#587#0" />
+                <element signature="e#862#1012#0" />
+                <element signature="e#1091#2116#0" />
+                <element signature="e#2177#2833#0" />
+                <element signature="e#2889#3623#0" />
+                <element signature="e#3699#6630#0" />
+                <element signature="e#6661#6845#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -50,10 +61,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>dog</find>
-      <find>annotate_string</find>
-      <find>sigma=weights</find>
-      <find>linearbackground</find>
       <find>curve_fit</find>
       <find>stddev</find>
       <find>r--</find>
@@ -63,7 +70,6 @@
       <find>place</find>
       <find>cutarray</find>
       <find>fit_function</find>
-      <find>plot_fit</find>
       <find>fitfunc</find>
       <find>testin</find>
       <find>float</find>
@@ -80,6 +86,11 @@
       <find>fwhm</find>
       <find>cut_</find>
       <find>numpy</find>
+      <find>data_from_fit_and_parameters(data, fitfunc, parameters)</find>
+      <find>plot_fit</find>
+      <find>remove_fit_from_data</find>
+      <find>plot_</find>
+      <find>g--</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -89,8 +100,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/AE.py" />
         <option value="$PROJECT_DIR$/fitlib.py" />
+        <option value="$PROJECT_DIR$/AE.py" />
       </list>
     </option>
   </component>
@@ -197,39 +208,39 @@
       <window_info content_ui="combo" id="Project" order="0" weight="0.3611691" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32896176" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.22402598" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3517316" />
       <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" weight="0.0" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.22402598" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32900432" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.29761904" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.29761904" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3517316" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.3611691" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" weight="0.0" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.22835498" />
-      <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.35281384" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.29545453" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32900432" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32896176" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.35281384" />
+      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" weight="0.0" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -249,14 +260,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/fitlib.py</url>
-          <line>406</line>
-          <option name="timeStamp" value="143" />
+          <url>file://$PROJECT_DIR$/AE.py</url>
+          <line>336</line>
+          <option name="timeStamp" value="167" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/fitlib.py</url>
-          <line>311</line>
-          <option name="timeStamp" value="161" />
+          <line>426</line>
+          <option name="timeStamp" value="173" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fitlib.py</url>
+          <line>259</line>
+          <option name="timeStamp" value="174" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -269,13 +285,16 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="162" />
+      <option name="time" value="175" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="len(cutdata)" language="Python" />
-        <watch expression="ae_pos" language="Python" />
-        <watch expression="len(buff_cutdata)" language="Python" />
+        <watch expression="data[i][0]" language="Python" />
+        <watch expression="fitdata[i][0]" language="Python" />
+        <watch expression="data[i][1]" language="Python" />
+        <watch expression="fitdata[i][1]" language="Python" />
+        <watch expression="newdata[i]" language="Python" />
+        <watch expression="float64(data[i][1])-float64(fitdata[i][1])" language="Python" />
       </configuration>
     </watches-manager>
   </component>
@@ -304,52 +323,52 @@
     </expressions>
     <expressions id="watch">
       <expression>
-        <expression-string>len(buff_cutdata)</expression-string>
+        <expression-string>diffdata</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ae_pos</expression-string>
+        <expression-string>fitdata[i][1]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>iteration</expression-string>
+        <expression-string>float64(data[i][1])-float64(fitdata[i][1])</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>len(cutdata)</expression-string>
+        <expression-string>data[i][1]-fitdata[i][1]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>cdl</expression-string>
+        <expression-string>newdata[i]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>n</expression-string>
+        <expression-string>fitdata[i][2]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>deviation</expression-string>
+        <expression-string>fitdatadata[i][2]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>current_pos</expression-string>
+        <expression-string>data[i][1]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>len(buff_cutdata)/cdl</expression-string>
+        <expression-string>fitdata[i][0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>round(len(buff_cutdata)/cdl)</expression-string>
+        <expression-string>data[i][0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -421,6 +440,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
           <caret line="65" column="63" lean-forward="true" selection-start-line="65" selection-start-column="63" selection-end-line="65" selection-end-column="63" />
+          <folding>
+            <element signature="e#472#587#0" />
+            <element signature="e#862#1012#0" />
+            <element signature="e#1091#2116#0" />
+            <element signature="e#2177#2833#0" />
+            <element signature="e#2889#3623#0" />
+            <element signature="e#3699#6630#0" />
+            <element signature="e#6661#6845#0" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -430,6 +458,8 @@
           <caret line="331" selection-start-line="331" selection-end-line="331" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -461,6 +491,8 @@
           <caret line="331" selection-start-line="331" selection-end-line="331" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -492,6 +524,8 @@
           <caret line="310" selection-start-line="310" selection-end-line="310" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -509,6 +543,8 @@
           <caret line="310" selection-start-line="310" selection-end-line="310" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -526,6 +562,8 @@
           <caret line="310" selection-start-line="310" selection-end-line="310" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -543,6 +581,8 @@
           <caret line="307" selection-start-line="307" selection-end-line="307" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -560,6 +600,8 @@
           <caret line="307" selection-start-line="307" selection-end-line="307" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -577,6 +619,8 @@
           <caret line="304" selection-start-line="304" selection-end-line="304" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -593,6 +637,8 @@
         <state>
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -609,6 +655,8 @@
         <state>
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -626,6 +674,8 @@
           <caret line="293" selection-start-line="293" selection-end-line="293" />
           <folding>
             <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
           </folding>
         </state>
       </provider>
@@ -747,20 +797,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AE.py">
+    <entry file="file://$PROJECT_DIR$/fitlib.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2009">
-          <caret line="354" selection-start-line="354" selection-end-line="354" />
+        <state relative-caret-position="347">
+          <caret line="256" selection-start-line="256" selection-end-line="256" />
           <folding>
-            <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#472#587#0" />
+            <element signature="e#862#1012#0" />
+            <element signature="e#1091#2116#0" />
+            <element signature="e#2177#2833#0" />
+            <element signature="e#2889#3623#0" />
+            <element signature="e#3699#6630#0" />
+            <element signature="e#6661#6845#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fitlib.py">
+    <entry file="file://$PROJECT_DIR$/AE.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="301" column="48" lean-forward="true" selection-start-line="301" selection-start-column="48" selection-end-line="301" selection-end-column="48" />
+        <state relative-caret-position="394">
+          <caret line="337" lean-forward="true" selection-start-line="337" selection-end-line="337" />
+          <folding>
+            <element signature="e#19#38#0" expanded="true" />
+            <element signature="e#5338#5397#0" />
+            <element signature="e#12739#12946#0" />
+          </folding>
         </state>
       </provider>
     </entry>

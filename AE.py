@@ -331,8 +331,30 @@ for file in filelist:
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
         ae_func = eval(ae_func)
 
+        while
+
         #actually fit
         errmsg, p1, err, lowerfitbound, upperfitbound = fl.fit_function_to_data(data, ae_func, p)
+
+        # we don't even need to plot if we neither save nor show
+        if (args.noshow is False) or (args.nosave is False):
+            fig1 = plt.figure()
+            ae_x = p1[1]
+            fl.plotES(complete_data, file[1] + ' / AE = %.2f, ERR=%.5f' % (ae_x, err))  # plot data
+            fl.plot_fit_with_testinfo(data, ae_func, p1, lowerfitbound, upperfitbound)  # plot fit
+
+            # we annotate the AE in the plot
+            if args.writetoplot is True:
+                # which alpha?
+                if alpha is not None:
+                    alpha_value = alpha
+                else:
+                    alpha_value = p1[3]
+
+                annotate_string = 'AE = %.2f\n$\\alpha$ = %.3f, err=%.2f' % (ae_x, alpha_value, err)
+                fig1.text(0.15, 0.85, annotate_string,
+                          verticalalignment='top', horizontalalignment='left',
+                          color='green', fontsize=15)
 
         #log success
         if p1 is not None:
@@ -373,26 +395,6 @@ for file in filelist:
             hl.writearray(fitdata, arrayfilename)
 
             log.write('Wrote array to %s' % arrayfilename)
-
-        #we don't even need to plot if we neither save nor show
-        if (args.noshow is False) or (args.nosave is False):
-            fig1 = plt.figure()
-            ae_x = p1[1]
-            fl.plotES(complete_data, file[1] + ' / AE = %.2f, ERR=%.5f' % (ae_x, err)) # plot data
-            fl.plot_fit_with_testinfo(data, ae_func, p1, lowerfitbound, upperfitbound) # plot fit
-
-            #we annotate the AE in the plot
-            if args.writetoplot is True:
-                # which alpha?
-                if alpha is not None:
-                    alpha_value = alpha
-                else:
-                    alpha_value = p1[3]
-
-                annotate_string = 'AE = %.2f\n$\\alpha$ = %.3f, err=%.2f' %(ae_x, alpha_value,err)
-                fig1.text(0.15, 0.85, annotate_string,
-                        verticalalignment='top', horizontalalignment='left',
-                        color='green', fontsize=15)
 
         if args.nosave is False:
             plotfile = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf'))
