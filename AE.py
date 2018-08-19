@@ -33,6 +33,7 @@ parser.add_argument("--alpha", "-a", help="Specify the exponent for the fit func
 parser.add_argument("--fwhm", "-s", help="Specify the FWHM-resolution in eV. If not specified, 1 eV will be assumed", type = float)
 parser.add_argument("--offset", help="Specify the offset. If not specified, an offset of 10 will be assumed", type = float)
 parser.add_argument("--energyshift", help="Specifiy a shift for the AE in eV. If not specified, 0 eV will be assumed", type = float)
+parser.add_argument("--minspan", help="Specifiy the span of the interval of the relevant fit datain eV. If not specified, 3 eV will be assumed.Set to a non-positive value, if a fit over all data is desired.", type = float)
 parser.add_argument("--ea", help="Specify the EA in eV. If not specified, 8 eV will be assumed", type = float)
 parser.add_argument("--linearbackground", help="Set this, if you want to fit a linear (non-constant) background.", action = 'store_true')
 parser.add_argument("--noshow", help="Do not show the plot windows.", action = 'store_true')
@@ -50,6 +51,7 @@ fwhm = args.fwhm
 alpha = args.alpha
 linearbackground = args.linearbackground
 energyshift = args.energyshift
+minspan = args.minspan
 offset = args.offset
 ea = args.ea
 
@@ -62,7 +64,7 @@ if args.outputfolder is not None:
 
 # derive the log class from the loglib and add a function to write AE parameters
 class AELog(loglib.Log):
-    def AE_fit_p(self, params, alpha, min, max, linearbackground, energyshift, fwhm, offsetfixed):
+    def AE_fit_p(self, params, alpha, min, max, linearbackground, energyshift, minspan, fwhm, offsetfixed):
         if alpha is not None:
             self.write('AE: %f (Alpha fixed to %f)' % (params[1], alpha))
         else:
@@ -77,6 +79,9 @@ class AELog(loglib.Log):
 
         if energyshift is not None:
             self.write('Energies were shifted by %s eV.' % energyshift)
+
+        if minspan is not None:
+            self.write('Span of fit relevant data was set to %s eV.' % minspan)
 
         if min is not None:
             self.write('Fit was started at %s eV.' % min)
@@ -201,6 +206,8 @@ for file in filelist:
             fwhm = float64(1.0)
         if energyshift is None:
             energyshift = float64(0)
+        if minspan is None:
+            minspan = float64(3)
 
         #if there were arguments specified in the filelist, we set them here
         if len(file) > 2:
@@ -237,6 +244,8 @@ for file in filelist:
                             linearbackground = False
                     if arg[0] == 'energyshift':
                         energyshift = float64(arg[1])
+                    if arg[0] == 'minspan':
+                        minspan = float64(arg[1])
 
             # adapt the energyshift to minfit and maxfit
             minfit += energyshift
@@ -286,6 +295,10 @@ for file in filelist:
             energyshift = args.energyshift
             log.write('Overwriting energyshift from command line!')
 
+        if args.minspan is not None:
+            minspan = args.minspan
+            log.write('Overwriting minspan from command line!')
+
         #depending on the situation of alpha and the lin background we need different amounts of params
         """
         if (alpha is None) and (linearbackground is False):
@@ -326,81 +339,85 @@ for file in filelist:
 
         #sigma = fwhm / (2*sqrt(2*np.log(2)))
 
-        sigma = 0.4 / (2*sqrt(2*np.log(2)))
+        #sigma = 0.4 / (2*sqrt(2*np.log(2)))
 
         ae_func = fl.AE_func(alpha, offsetfixed, linearbackground)
         ae_func = eval(ae_func)
 
-        while
+
+        # continue the fit until there is no more sensible data left to fit.
+        # Work in progress about to be implemented:
+        # It is desired to fit around 1 ea, remove that fitfunction and fit again, and again...
+        # until fit_function_to_data or another entity will claim the fit attempt to be over
 
         #actually fit
-        errmsg, p1, err, lowerfitbound, upperfitbound = fl.fit_function_to_data(data, ae_func, p)
+        msg, p1, err, lowerfitbound, upperfitbound, fwhm, iterations =\
+            fl.fit_function_to_data(data, p, fwhm, minspan)
 
-        # we don't even need to plot if we neither save nor show
-        if (args.noshow is False) or (args.nosave is False):
-            fig1 = plt.figure()
-            ae_x = p1[1]
-            fl.plotES(complete_data, file[1] + ' / AE = %.2f, ERR=%.5f' % (ae_x, err))  # plot data
-            fl.plot_fit_with_testinfo(data, ae_func, p1, lowerfitbound, upperfitbound)  # plot fit
-
-            # we annotate the AE in the plot
-            if args.writetoplot is True:
-                # which alpha?
-                if alpha is not None:
-                    alpha_value = alpha
-                else:
-                    alpha_value = p1[3]
-
-                annotate_string = 'AE = %.2f\n$\\alpha$ = %.3f, err=%.2f' % (ae_x, alpha_value, err)
-                fig1.text(0.15, 0.85, annotate_string,
-                          verticalalignment='top', horizontalalignment='left',
-                          color='green', fontsize=15)
-
-        #log success
-        if p1 is not None:
-            log.write('============================')
-            log.write('Fitted file %s with success.' % file[0])
-            log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, energyshift, fwhm, offsetfixed)
+        if (msg == 'fit succeeded. ...'): #testing
+        #if (msg != 'fit succeeded.'):
+            log.write('Failed with fitting of file %s. Error: %s' % (file[0], msg))
         else:
-            log.write('Failed with fitting of file %s. Error: %s' % (file[0], errmsg))
+            # we don't even need to plot if we neither save nor show
+            if (args.noshow is False) or (args.nosave is False):
+                fig = fl.create_plot_figure(complete_data, file[1], p1, lowerfitbound, upperfitbound, fwhm, iterations, err)
 
-        #we need to create a more speaking filename
-        additions = ''
+            #log success
+            if p1 is not None:
+                log.write('============================')
+                log.write('Fitted file %s with success.' % file[0])
+                log.AE_fit_p(p1, alpha, minfit, maxfit, linearbackground, energyshift, minspan, fwhm, offsetfixed)
+            else:
+                log.write('Failed with fitting of file %s. Error: %s' % (file[0], msg))
 
-        additions += '_fwhm=%s' % str(fwhm)
+            #we need to create a more speaking filename
+            additions = ''
 
-        if alpha is not None:
-            additions += '_alpha=%s' % alpha
+            additions += '_fwhm=%s' % str(fwhm)
 
-        if minfit is not None:
-            additions += '_min=%s' % minfit
+            if alpha is not None:
+                additions += '_alpha=%s' % alpha
 
-        if maxfit is not None:
-            additions += '_max=%s' % maxfit
+            if minfit is not None:
+                additions += '_min=%s' % minfit
 
-        if linearbackground is True:
-            additions += '_linearbackground'
+            if maxfit is not None:
+                additions += '_max=%s' % maxfit
 
-        if energyshift is not None:
-            additions += '_energyshift=%s' % energyshift
+            if linearbackground is True:
+                additions += '_linearbackground'
 
-        if offsetfixed is not None:
-            additions += '_offsetfixed=%s' % offsetfixed
+            if energyshift is not None:
+                additions += '_energyshift=%s' % energyshift
 
-        # we offer an option to write an array of x- and y-values to a file
-        if args.writefit is True:
-            fitdata = fl.data_from_fit_and_parameters(data, ae_func, p1)
+            if minspan is not None:
+                additions += '_minspan=%s' % minspan
 
-            arrayfilename = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '_fitarray.txt'))
-            hl.writearray(fitdata, arrayfilename)
+            if offsetfixed is not None:
+                additions += '_offsetfixed=%s' % offsetfixed
 
-            log.write('Wrote array to %s' % arrayfilename)
+            # we offer an option to write an array of x- and y-values to a file
+            if args.writefit is True:
 
-        if args.nosave is False:
-            plotfile = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '.pdf'))
-            plt.savefig(plotfile, format='pdf')
-            log.write('Plotted to file: %s' % plotfile)
+                f1, f2, f3 = fl.write_fits(complete_data, p1, file[0], err, lowerfitbound, upperfitbound, fwhm)
 
+                f1.close()
+                f2.close()
+                f3.close()
+
+                arrayfilename = os.path.normcase(os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions + '_fitarray.txt'))
+                #hl.writearray(fitdata, arrayfilename)
+
+                log.write('Wrote array to %s' % arrayfilename)
+
+            if args.nosave is False:
+                plotfile = os.path.normcase(
+                    os.path.join(os.path.dirname(sys.argv[0]), outputfolder + '/' + file[1] + additions))
+                filetype = '.pdf'
+
+                #plot all the data
+                fig.savefig(plotfile+filetype, format='pdf', dpi='figure')
+                log.write('Plotted to file: %s' % (plotfile+filetype))
 #done
 log.stop()
 

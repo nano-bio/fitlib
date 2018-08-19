@@ -1,6 +1,0 @@
-Z:\User\Josi\fitlib\AE_data\AE_HMX_H2O.txt  ea=22 alpha=2 linearbackground=True min=10 max=27
-Z:\User\Josi\fitlib\AE_data\AE_HMX_H2O.txt  ea=22 alpha=2 linearbackground=False
-Z:\User\Josi\fitlib\AE_data\AE_HMX_H2O.txt  ea=22 sigma=0.14
-Z:\User\Josi\fitlib\AE_data\AE_HMX_H2O.txt  ea=22 alpha=1.127 linearbackground=False
-Z:\User\Josi\fitlib\AE_data\AE_HMX_H2O.txt  ea=22 alpha=1.127 linearbackground=True
-Z:\User\Josi\fitlib\AE_data\AE_HMX_H2O.txt  ea=22 offset=1 sigma=0.14
