@@ -4,3 +4,5 @@ output.log
 output/*
 *.pdf
 chemspider_token.txt
+.idea/
+fitlib.egg-info/
