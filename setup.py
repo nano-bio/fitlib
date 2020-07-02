@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="fitlib",  # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="nano-bio",
     author_email="author@example.com",
     description="A small example package",
@@ -17,6 +17,9 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+    ],
+    install_requires=[
+        'suds-jurko',
     ],
     python_requires='>=3.6',
 )
