@@ -1,5 +1,4 @@
 #!/usr/bin/python
-from numpy import *
 from scipy import *
 from scipy.special import *
 
@@ -7,11 +6,6 @@ from scipy import optimize
 from scipy import signal
 
 from operator import itemgetter
-
-import re
-import os
-
-import helplib as hl
 
 from math import sqrt
 from math import log

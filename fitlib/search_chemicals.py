@@ -1,5 +1,5 @@
-from chemlib import ChemicalObject
-import helplib as hl
+from fitlib.chemlib import ChemicalObject
+import fitlib.helplib as hl
 import sys
 
 import argparse

@@ -2,7 +2,7 @@ from suds.client import Client
 import suds
 import time
 
-import helplib as hl
+import fitlib.helplib as hl
 
 #be aware that you need a chemspider_token.txt in the directory for the app to work
 #the chemspider_token.txt should only contain the token (available online for free)

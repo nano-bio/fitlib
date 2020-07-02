@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
-import helplib as hl
-import matplotlib
+import fitlib.helplib as hl
 
 import matplotlib.pyplot as plt
 

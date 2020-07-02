@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="fitlib",  # Replace with your own username
-    version="0.0.2",
+    version="0.0.3",
     author="nano-bio",
     author_email="author@example.com",
     description="A small example package",
