@@ -19,7 +19,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'suds-jurko',
+        'suds-community',
     ],
     python_requires='>=3.6',
 )
