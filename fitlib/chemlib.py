@@ -69,7 +69,7 @@ class ChemicalObject():
             searchterm = self.name
             
         #it's a good idea to only search for ascii:
-        searchterm = searchterm.decode('utf8', 'replace').encode('ascii', 'replace')
+        searchterm = str(searchterm).encode('ascii', 'replace')
         
         #try connecting
         try:
